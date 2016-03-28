@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/etDrugName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tên thuốc"
+        android:singleLine="true"
+        android:textSize="15sp"
+        app:met_floatingLabel="highlight"
+        app:met_maxCharacters="30"
+        app:met_minCharacters="2" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/etQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:hint="Số lượng"
+        android:inputType="number"
+        android:singleLine="true"
+        android:textSize="15sp"
+        android:gravity="center"
+        app:met_floatingLabel="highlight"
+        android:maxLength="4"
+        android:ems="4"/>
+</LinearLayout>

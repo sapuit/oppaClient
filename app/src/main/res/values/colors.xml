@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#09b83e</color>
+    <color name="colorPrimaryDark">#099a3e</color>
+    <color name="colorAccent">#09b83e</color>
+    <color name="colorPrimaryLight">#C8E6C9</color>
+    <color name="colorText">#FFFFFF</color>
+    <color name="colorDivider">#B6B6B6</color>
+
+    <color name="activatedColor">#20000000</color>
+    <color name="pressedColor">#2033b5e5</color>
+    <color name="white">#ffff</color>
+</resources>
