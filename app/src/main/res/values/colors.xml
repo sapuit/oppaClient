@@ -10,4 +10,7 @@
     <color name="activatedColor">#20000000</color>
     <color name="pressedColor">#2033b5e5</color>
     <color name="white">#ffff</color>
+
+    <color name="colorBackgroundBtn">#f5f5f5</color>
+    <color name="secondary_text_dark">#d7d7d7</color>
 </resources>

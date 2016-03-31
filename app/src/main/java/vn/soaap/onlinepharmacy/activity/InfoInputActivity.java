@@ -1,6 +1,7 @@
 package vn.soaap.onlinepharmacy.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -33,6 +35,7 @@ public class InfoInputActivity extends AppCompatActivity {
     MaterialEditText etAddress;
     MaterialEditText etPhoneNum;
     MaterialEditText etName;
+    Button footer_next;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,17 +46,22 @@ public class InfoInputActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
-        etName = (MaterialEditText) findViewById(R.id.etName);
-        etAddress = (MaterialEditText) findViewById(R.id.etAddress);
+        etName     = (MaterialEditText) findViewById(R.id.etName);
+        etAddress  = (MaterialEditText) findViewById(R.id.etAddress);
         etPhoneNum = (MaterialEditText) findViewById(R.id.etPhoneNum);
+        footer_next = (Button) findViewById(R.id.footer_next);
+
+//        fab.setEnabled(false);
+//        fab.setBackgroundColor(getResources().getColor(R.color.colorDivider));
 
         etAddress.setEnabled(false);
         etPhoneNum.setEnabled(false);
+        footer_next.setEnabled(false);
 
         etName.addTextChangedListener(new TextWatcher() {
             @Override
@@ -64,7 +72,6 @@ public class InfoInputActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 etAddress.setEnabled(s.toString().trim().length() > 3);
                 etPhoneNum.setEnabled(s.toString().trim().length() > 5);
-
             }
 
             @Override
@@ -80,7 +87,14 @@ public class InfoInputActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 etAddress.setEnabled(s.toString().trim().length() > 3);
-                fab.setEnabled(s.toString().trim().length() > 3);
+                footer_next.setEnabled(s.toString().trim().length() > 3);
+                if(s.toString().trim().length() > 3)
+                    footer_next.setTextColor(Color.BLACK);
+                else
+                    footer_next.setTextColor(Color.parseColor("#d7d7d7"));
+
+//                fab.setEnabled(s.toString().trim().length() > 3);
+//                fab.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             }
 
             @Override
@@ -89,7 +103,8 @@ public class InfoInputActivity extends AppCompatActivity {
         });
         final Intent intent = new Intent(this, DrugsInputActivity.class);
 
-        fab.setOnClickListener(new View.OnClickListener() {
+
+        footer_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String name = etName.getText().toString();

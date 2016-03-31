@@ -1,71 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:gravity="center"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="vn.soaap.onlinepharmacy.activity.InfoInputActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/lnFooter"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="5dp"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/etName"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Họ tên "
-                android:inputType="textCapWords"
-                android:singleLine="true"
-                android:textSize="18sp"
-                app:met_clearButton="true"
-                app:met_floatingLabel="highlight" />
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/etPhoneNum"
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorPrimary">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_above="@+id/tvTitle"
+                        android:background="@color/colorPrimary" />
+
+                    <TextView
+                        android:id="@+id/tvTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/activatedColor"
+                        android:padding="10dp"
+
+                        android:text="Nhập thông tin cá nhân của bạn"
+                        android:textColor="@android:color/white"
+                        android:textSize="25sp" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Số điện thoại"
-                android:inputType="number"
-                android:maxLength="15"
-                android:singleLine="true"
-                android:textSize="18sp"
-                app:met_floatingLabel="highlight" />
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="30dp">
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/etAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:hint="Địa chỉ"
-                android:inputType="textCapWords"
-                android:maxLength="30"
-                android:singleLine="true"
-                android:textSize="18sp"
-                app:met_clearButton="true"
-                app:met_floatingLabel="highlight"
-                />
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/etName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Họ tên "
+                    android:inputType="textCapWords"
+                    android:singleLine="true"
+                    android:textSize="15sp"
+                    app:met_clearButton="true"
+                    app:met_floatingLabel="highlight" />
 
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/etPhoneNum"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Số điện thoại"
+                    android:inputType="number"
+                    android:maxLength="15"
+                    android:singleLine="true"
+                    android:textSize="15sp"
+                    app:met_floatingLabel="highlight" />
+
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/etAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:hint="Địa chỉ"
+                    android:inputType="textCapWords"
+                    android:maxLength="30"
+                    android:singleLine="true"
+                    android:textSize="15sp"
+                    app:met_clearButton="true"
+                    app:met_floatingLabel="highlight" />
+
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/lnFooter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/footer_next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end|center"
+            android:background="@color/colorBackgroundBtn"
+            android:paddingRight="20dp"
+            android:textColor="@color/secondary_text_dark"
+            android:text="Tiếp theo >" />
+    </LinearLayout>
+</RelativeLayout>
