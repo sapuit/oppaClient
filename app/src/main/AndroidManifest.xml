@@ -27,6 +27,7 @@
             android:name=".activity.InfoInputActivity"
             android:label="@string/title_activity_hand_input"
             android:parentActivityName=".activity.MainActivity"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/AppTheme.NoActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

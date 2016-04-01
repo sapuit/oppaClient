@@ -2,7 +2,9 @@ package vn.soaap.onlinepharmacy.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +14,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -42,6 +45,10 @@ public class InfoInputActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_input);
 
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(Color.BLACK);
+        }
+
         initView();
     }
 
@@ -51,8 +58,8 @@ public class InfoInputActivity extends AppCompatActivity {
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
-        etName     = (MaterialEditText) findViewById(R.id.etName);
-        etAddress  = (MaterialEditText) findViewById(R.id.etAddress);
+        etName = (MaterialEditText) findViewById(R.id.etName);
+        etAddress = (MaterialEditText) findViewById(R.id.etAddress);
         etPhoneNum = (MaterialEditText) findViewById(R.id.etPhoneNum);
         footer_next = (Button) findViewById(R.id.footer_next);
 
@@ -70,8 +77,7 @@ public class InfoInputActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                etAddress.setEnabled(s.toString().trim().length() > 3);
-                etPhoneNum.setEnabled(s.toString().trim().length() > 5);
+                etPhoneNum.setEnabled(s.toString().trim().length() > 3);
             }
 
             @Override
@@ -86,13 +92,17 @@ public class InfoInputActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                etAddress.setEnabled(s.toString().trim().length() > 3);
-                footer_next.setEnabled(s.toString().trim().length() > 3);
-                if(s.toString().trim().length() > 3)
-                    footer_next.setTextColor(Color.BLACK);
-                else
-                    footer_next.setTextColor(Color.parseColor("#d7d7d7"));
 
+                int minimum = 6;
+                etAddress.setEnabled(s.toString().trim().length() > minimum);
+                footer_next.setEnabled(s.toString().trim().length() > minimum);
+                if (s.toString().trim().length() > minimum) {
+                    footer_next.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ic_next_black, 0);
+                    footer_next.setTextColor(Color.BLACK);
+                } else {
+                    footer_next.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ic_next_gray, 0);
+                    footer_next.setTextColor(Color.parseColor("#d7d7d7"));
+                }
 //                fab.setEnabled(s.toString().trim().length() > 3);
 //                fab.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             }
@@ -102,7 +112,6 @@ public class InfoInputActivity extends AppCompatActivity {
             }
         });
         final Intent intent = new Intent(this, DrugsInputActivity.class);
-
 
         footer_next.setOnClickListener(new View.OnClickListener() {
             @Override

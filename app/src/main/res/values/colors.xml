@@ -8,6 +8,8 @@
     <color name="colorDivider">#B6B6B6</color>
 
     <color name="activatedColor">#20000000</color>
+    <color name="colorBackgroundText">#60000000</color>
+
     <color name="pressedColor">#2033b5e5</color>
     <color name="white">#ffff</color>
 

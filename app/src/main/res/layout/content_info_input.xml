@@ -27,23 +27,23 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/colorPrimary">
+                    android:layout_height="match_parent">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_above="@+id/tvTitle"
-                        android:background="@color/colorPrimary" />
+                        android:background="@mipmap/im_pharmacy" />
 
                     <TextView
                         android:id="@+id/tvTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
-                        android:background="@color/activatedColor"
-                        android:padding="10dp"
-
+                        android:background="@color/colorBackgroundText"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:paddingRight="30dp"
+                        android:paddingLeft="30dp"
                         android:text="Nhập thông tin cá nhân của bạn"
                         android:textColor="@android:color/white"
                         android:textSize="25sp" />
@@ -101,9 +101,9 @@
 
     </ScrollView>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/lnFooter"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
@@ -115,6 +115,11 @@
             android:background="@color/colorBackgroundBtn"
             android:paddingRight="20dp"
             android:textColor="@color/secondary_text_dark"
-            android:text="Tiếp theo >" />
-    </LinearLayout>
+            android:drawableRight="@mipmap/ic_next_gray"
+            android:text="Tiếp theo "
+            android:textSize="15sp"/>
+
+
+    </RelativeLayout>
+
 </RelativeLayout>
