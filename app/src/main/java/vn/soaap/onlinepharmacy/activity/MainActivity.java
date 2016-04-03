@@ -41,13 +41,17 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onClick(View v) {
+        Intent intent = new Intent(this,InfoInputActivity.class);
+
         switch (v.getId()) {
             case R.id.btnHandInput:
-                startActivity(new Intent(this,InfoInputActivity.class));
+                intent.putExtra("action", 0);
                 break;
             case R.id.btnImageInput:
-                startActivity(new Intent(this,ImageInputActivity.class));
+                intent.putExtra("action",1);
                 break;
         }
+
+        startActivity(intent);
     }
 }

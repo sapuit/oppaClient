@@ -42,15 +42,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="vn.soaap.onlinepharmacy.activity.InfoInputActivity" />
         </activity>
-        <activity
-            android:name=".activity.ImageInputActivity"
-            android:label="@string/title_activity_image_input"
-            android:parentActivityName=".activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="vn.soaap.onlinepharmacy.activity.MainActivity" />
-        </activity>
     </application>
 
 </manifest>

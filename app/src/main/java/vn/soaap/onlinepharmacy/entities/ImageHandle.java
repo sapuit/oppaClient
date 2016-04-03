@@ -1,9 +1,7 @@
 package vn.soaap.onlinepharmacy.entities;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -41,6 +39,11 @@ public class ImageHandle {
         else if (type == 2)
             this.bitmap = onCaptureImageResult(data);
 
+    }
+
+    public ImageHandle(Bitmap bitmap, Context context) {
+        this.bitmap = bitmap;
+        this.context = context;
     }
 
     public Bitmap getBitmap() {

@@ -21,12 +21,10 @@ import vn.soaap.onlinepharmacy.recyclerview.RecyclerViewAdapter;
 public class PrescriptionAdapter extends RecyclerViewAdapter<Drug, PrescriptionAdapter.DrugViewHolder> {
 
     List<Drug> items;
-
     public static class DrugViewHolder extends RecyclerView.ViewHolder {
 
         public TextView tvDrugName;
         public TextView tvDrugQuan;
-        public ImageButton btnbtnRemove;
 
         public DrugViewHolder(View itemView) {
             super(itemView);
@@ -35,8 +33,6 @@ public class PrescriptionAdapter extends RecyclerViewAdapter<Drug, PrescriptionA
                     itemView.findViewById(R.id.tv_item_drug_name);
             tvDrugQuan = (TextView)
                     itemView.findViewById(R.id.tv_item_drug_quantities);
-            btnbtnRemove = (ImageButton)
-                    itemView.findViewById(R.id.btnRemove);
         }
     }
 
@@ -58,13 +54,7 @@ public class PrescriptionAdapter extends RecyclerViewAdapter<Drug, PrescriptionA
         super.onBindViewHolder(viewHolder, position);
         Drug drug = items.get(position);
         viewHolder.tvDrugName.setText(String.valueOf(position + 1) + ". " + drug.getName());
-        viewHolder.tvDrugQuan.setText(" x " + String.valueOf(drug.getQuatities()));
-        viewHolder.btnbtnRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeItem(position);
-            }
-        });
+        viewHolder.tvDrugQuan.setText("Số lượng : " + String.valueOf(drug.getQuatities()));
     }
 
     @Override
