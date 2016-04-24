@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -20,35 +21,48 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import vn.soaap.onlinepharmacy.R;
 import vn.soaap.onlinepharmacy.adapter.PrescriptionAdapter;
 import vn.soaap.onlinepharmacy.entities.Drug;
-import vn.soaap.onlinepharmacy.entities.ImageHandle;
+import vn.soaap.onlinepharmacy.entities.ImagePre;
+import vn.soaap.onlinepharmacy.entities.ListDrugPre;
+import vn.soaap.onlinepharmacy.entities.User;
 import vn.soaap.onlinepharmacy.recyclerview.ItemTouchListenerAdapter;
 import vn.soaap.onlinepharmacy.recyclerview.SwipeToDismissTouchListener;
-import vn.soaap.onlinepharmacy.widget.PullScrollView;
 
 public class DrugsInputActivity extends AppCompatActivity
-        implements PullScrollView.OnTurnListener,
-        ItemTouchListenerAdapter.RecyclerViewOnItemClickListener {
+        implements ItemTouchListenerAdapter.RecyclerViewOnItemClickListener {
 
-    SwipeToDismissTouchListener swipeToDismissTouchListener;
-    private List<Drug> drugs = new ArrayList<Drug>();
-    PrescriptionAdapter adapter;
-    private View positiveAction;
-    private String name;
-    private String address;
-    private String phoneNum;
+    private User user;
     private int action;
-    private ImageHandle imageHandle;
+    //    private ImageHandle         imageHandle;
+    private PrescriptionAdapter adapter;
+    private ImagePre imagePre;
+    private List<Drug> drugs = new ArrayList<Drug>();
+    private boolean result = false;
 
-    private TextView user_name, user_phone_num, user_addr;
-    private EditText etDrugName;
-    private EditText etDrugQuantity;
-    private Button btnAddDrug;
-    private ImageView ivImage;
-    private RecyclerView recyclerView;
+    //    View
+    EditText etDrugName;
+    EditText etDrugQuantity;
+    SwipeToDismissTouchListener swipeToDismissTouchListener;
+    private View positiveAction;
+    @Bind(R.id.user_name)
+    TextView user_name;
+    @Bind(R.id.user_addr)
+    TextView user_addr;
+    @Bind(R.id.user_phone_num)
+    TextView user_phone_num;
+    @Bind(R.id.btn_add_drug)
+    Button btnAddDrug;
+    @Bind(R.id.ivImage)
+    ImageView ivImage;
+    @Bind(R.id.rvPrescription)
+    RecyclerView recyclerView;
+    @Bind(R.id.fab)
+    FloatingActionButton fab;
 //    private PullScrollView mScrollView;
 //    private ImageView mHeadImg;
 
@@ -59,8 +73,8 @@ public class DrugsInputActivity extends AppCompatActivity
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 //                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_drugs_input);
+        ButterKnife.bind(this);
 
         getInfo();
         initView();
@@ -69,13 +83,17 @@ public class DrugsInputActivity extends AppCompatActivity
     private void getInfo() {
 
         Bundle bundle = getIntent().getBundleExtra("info");
-        name = bundle.getString("name");
-        address = bundle.getString("address");
-        phoneNum = bundle.getString("phoneNum");
         action = bundle.getInt("action", 0);
+
+        String name = bundle.getString("name");
+        String address = bundle.getString("address");
+        String phone = bundle.getString("phoneNum");
+        user = new User(name, phone, address);
+
         if (action == 1) {
             Bitmap bitmap = getIntent().getParcelableExtra("BitmapImage");
-            imageHandle = new ImageHandle(bitmap, this);
+            imagePre = new ImagePre(user);
+            imagePre.setImage(bitmap);
         }
     }
 
@@ -84,67 +102,70 @@ public class DrugsInputActivity extends AppCompatActivity
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+//        recyclerView = (RecyclerView) findViewById(R.id.rvPrescription);
+        user_name.setText(user.getName());
+        user_phone_num.setText(user.getPhone());
+        user_addr.setText(user.getAddress());
+
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
 //
-
-        ivImage = (ImageView) findViewById(R.id.ivImage);
-        user_name = (TextView) findViewById(R.id.user_name);
-        user_phone_num = (TextView) findViewById(R.id.user_phone_num);
-        user_addr = (TextView) findViewById(R.id.user_addr);
-
-        btnAddDrug = (Button) findViewById(R.id.btn_add_drug);
-
-        user_name.setText(name);
-        user_phone_num.setText(phoneNum);
-        user_addr.setText(address);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new SweetAlertDialog(DrugsInputActivity.this,
-                        SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Bạn có muốn gửi đơn thuốc ?")
-                        .setContentText("Đơn thuốc của bạn sẽ được gửi đến quầy thuốc")
-//                        .setContentText(getPrescription())
-                        .setCancelText("Hủy bỏ")
-                        .setConfirmText("Gửi đơn thuốc")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            //  @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                sDialog
-                                        .setTitleText("Gửi thành công !")
-                                        .setContentText("Đơn thuốc đang được sử lý, vui lòng chờ đợi !")
-                                        .setConfirmText("Đóng")
-                                        .showCancelButton(false)
-                                        .setConfirmClickListener(null)
-                                        .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-                            }
-                        }).show();
-                sendPrescription();
-            }
-        });
+//                new SweetAlertDialog(DrugsInputActivity.this,
+//                        SweetAlertDialog.WARNING_TYPE)
+//                        .setTitleText("Bạn có muốn gửi đơn thuốc ?")
+//                        .setContentText("Đơn thuốc của b ạn sẽ được gửi đến quầy thuốc")
+////                        .setContentText(getPrescription())
+//                        .setCancelText("Hủy bỏ")
+//                        .setConfirmText("Gửi đơn thuốc")
+//                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+//                            //  @Override
+//                            public void onClick(SweetAlertDialog sDialog) {
+//                                if (drugs.size() == 0)
+//                                    Toast.makeText(DrugsInputActivity.this,"Vui lòng thêm thuốc vào toa !",Toast.LENGTH_LONG).show();
+//                                else
+//                                sendPrescription();
+//
+//                                if (result)
+//                                    sDialog
+//                                            .setTitleText("Gửi thành công !")
+//                                            .setContentText("Đơn thuốc đang được sử lý, vui lòng chờ đợi !")
+//                                            .setConfirmText("Đóng")
+//                                            .showCancelButton(false)
+//                                            .setConfirmClickListener(null)
+//                                            .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+//                                else
+//                                    sDialog
+//                                            .setTitleText("Gửi không thành công !")
+//                                            .setContentText("Không thể kết nối với hệ thống!")
+//                                            .setConfirmText("Đóng")
+//                                            .showCancelButton(false)
+//                                            .setConfirmClickListener(null)
+//                                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+//                            }
+//                        }).show();
+//            }
+//        });
 
 //        mScrollView = (PullScrollView) findViewById(R.id.scroll_view);
 //        mHeadImg = (ImageView) findViewById(R.id.background_img);
 //
 //        mScrollView.setHeader(mHeadImg);
 //        mScrollView.setOnTurnListener(this);
-
-
         if (action == 1) {
-            ivImage.setImageBitmap(imageHandle.getBitmap());
+            ivImage.setImageBitmap(imagePre.getImage());
             ivImage.setVisibility(View.VISIBLE);
             btnAddDrug.setVisibility(View.INVISIBLE);
 
         } else {
-            btnAddDrug.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AddDrug();
-                }
-            });
+//            btnAddDrug.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    AddDrug();
+//                }
+//            });
 
-            recyclerView = (RecyclerView) findViewById(R.id.rvPrescription);
             recyclerView.setVisibility(View.VISIBLE);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.setHasFixedSize(true);
@@ -155,9 +176,9 @@ public class DrugsInputActivity extends AppCompatActivity
             recyclerView.addOnItemTouchListener(
                     new ItemTouchListenerAdapter(recyclerView, this));
 
-            swipeToDismissTouchListener =
-                    new SwipeToDismissTouchListener(
-                            recyclerView, new SwipeToDismissTouchListener.DismissCallbacks() {
+            swipeToDismissTouchListener = new SwipeToDismissTouchListener(
+                    recyclerView,
+                    new SwipeToDismissTouchListener.DismissCallbacks() {
 
                         @Override
                         public SwipeToDismissTouchListener.SwipeDirection canDismiss(int position) {
@@ -176,46 +197,27 @@ public class DrugsInputActivity extends AppCompatActivity
         }
     }
 
+    @OnClick(R.id.fab)
     private void sendPrescription() {
         try {
-            if (action == 1) {
-                if (imageHandle != null) {
-                    String UPLOAD_URL = "http://192.168.1.17/oppa/test";
-                    imageHandle.uploadImage(UPLOAD_URL);
-                }
-
-            } else {
-
+            if (action == 1)
+                imagePre.send(getBaseContext());
+            else {
+                if (drugs != null && drugs.size() != 0) {
+                    ListDrugPre drugPre = new ListDrugPre(user, drugs);
+                    result = drugPre.send(getBaseContext());
+                } else
+                    Toast.makeText(DrugsInputActivity.this,
+                            "Vui lòng thêm thuốc vào toa của bạn ! ",
+                            Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private String getPrescription() {
-        String s = String.format(
-                "Họ tên : %s \n" +
-                        "Địa chỉ : %s \n" +
-                        "Số điện thoại : %s \n" +
-                        "Đơn thuốc : \n", name, address, phoneNum);
-        int i = 1;
-        for (Drug drug : drugs) {
-            s += String.valueOf(i) + ". ";
-            s += drug.getName() + " ";
-            s += " x" + drug.getQuatities() + "\n";
-            i++;
-        }
-
-        return s;
-    }
-
-    @Override
-    public void onTurn() {
-
-    }
-
-
-    private void AddDrug() {
+    @OnClick(R.id.btn_add_drug)
+    public void AddDrug() {
         //  show dialog input drug
         MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title("Thêm thuốc mới")
@@ -230,7 +232,6 @@ public class DrugsInputActivity extends AppCompatActivity
                 }).build();
 
         positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
-        //noinspection ConstantConditions
         etDrugName = (EditText)
                 dialog.getCustomView().findViewById(R.id.etDrugName);
         etDrugQuantity = (EditText)
@@ -250,7 +251,6 @@ public class DrugsInputActivity extends AppCompatActivity
             public void afterTextChanged(Editable s) {
             }
         });
-
         etDrugQuantity.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -285,7 +285,7 @@ public class DrugsInputActivity extends AppCompatActivity
                     public void onClick(MaterialDialog dialog, DialogAction which) {
                         String drugName = etDrugName.getText().toString().trim();
                         drug.setName(drugName);
-                        drug.setQuatities(Integer.parseInt(etDrugQuantity.getText().toString()));
+                        drug.setQuatity(Integer.parseInt(etDrugQuantity.getText().toString()));
                         drugs.set(pos, drug);
 
                         adapter.notifyDataSetChanged();
@@ -300,7 +300,7 @@ public class DrugsInputActivity extends AppCompatActivity
                 dialog.getCustomView().findViewById(R.id.etQuantity);
 
         etDrugName.setText(drug.getName());
-        etDrugQuantity.setText(String.valueOf(drug.getQuatities()));
+        etDrugQuantity.setText(String.valueOf(drug.getQuatity()));
 
         etDrugQuantity.setEnabled(true);
 
@@ -344,9 +344,8 @@ public class DrugsInputActivity extends AppCompatActivity
     private void addDrug() {
         String drugName = etDrugName.getText().toString().trim();
         Drug drug = new Drug(drugs.size(), drugName);
-        drug.setQuatities(Integer.parseInt(etDrugQuantity.getText().toString()));
+        drug.setQuatity(Integer.parseInt(etDrugQuantity.getText().toString()));
         drugs.add(drug);
-
         adapter.notifyDataSetChanged();
     }
 
@@ -357,6 +356,5 @@ public class DrugsInputActivity extends AppCompatActivity
 
     @Override
     public void onItemLongClick(RecyclerView parent, View clickedView, int position) {
-
     }
 }

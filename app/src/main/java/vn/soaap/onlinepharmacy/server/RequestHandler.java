@@ -106,7 +106,6 @@ public class RequestHandler {
                 Log.e(" POST FAILED ", url);
                 Log.e(" POST FAILED ", context.getClass().getSimpleName() + " -> " + e.getLocalizedMessage());
 
-
                 if (DUtils.isDebuggable(context) && SHOW_DEBUG_ALERT_DIALOG) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setTitle(" ERROR ");
@@ -128,10 +127,9 @@ public class RequestHandler {
                                     dialog.dismiss();
                                 }
                             });
-                    AlertDialog alert = builder.create();
-                    alert.show();
+//                    AlertDialog alert = builder.create();
+//                    alert.show();
                 }
-
             }
 
             @Override

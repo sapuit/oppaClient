@@ -45,8 +45,8 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="21dp"
                     android:layout_marginTop="6dp"
-                    android:background="@drawable/selector_btn"
-                    android:drawableLeft="@drawable/add"
+                    android:background="@android:color/transparent"
+                    android:drawableLeft="@drawable/ic_plug"
                     android:drawablePadding="3dp"
                     android:gravity="center_vertical"
                     android:paddingBottom="5dp"
@@ -57,32 +57,63 @@
                     android:textColor="#57AF4E"
                     android:textSize="13sp" />
 
-                <TextView
-                    android:id="@+id/user_phone_num"
+                <LinearLayout
+                    android:id="@+id/ln_phone_num"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="103dp"
                     android:layout_marginTop="4dp"
-                    android:layout_toLeftOf="@+id/btn_add_drug"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:text="0987627178"
-                    android:textColor="#A1A1A1"
-                    android:textSize="12sp" />
+                    android:layout_toLeftOf="@+id/btn_add_drug">
 
-                <TextView
-                    android:id="@+id/user_addr"
+                    <ImageView
+                        android:layout_width="50px"
+                        android:layout_height="50px"
+                        android:layout_marginRight="5dp"
+                        android:src="@mipmap/ic_phone"
+                        />
+
+                    <TextView
+                        android:id="@+id/user_phone_num"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="0987627178"
+                        android:textColor="#A1A1A1"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/ln_adress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/user_phone_num"
+                    android:layout_below="@id/ln_phone_num"
                     android:layout_marginLeft="103dp"
                     android:layout_marginTop="4dp"
-                    android:layout_toLeftOf="@+id/btn_add_drug"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:text="Tân phú quận 9, thành phố hồ chí minh"
-                    android:textColor="#A1A1A1"
-                    android:textSize="12sp" />
+
+                    android:layout_toLeftOf="@+id/btn_add_drug">
+
+                    <ImageView
+                        android:layout_width="50px"
+                        android:layout_height="50px"
+                        android:layout_marginRight="5dp"
+                        android:src="@mipmap/ic_adress" />
+
+                    <TextView
+                        android:id="@+id/user_addr"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="Tân phú quận 9,thành phố hồ chí minh"
+                        android:textColor="#A1A1A1"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
             </RelativeLayout>
 
             <ImageView
@@ -164,6 +195,7 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="Toa thuốc của bạn "
+                android:textStyle="bold"
                 android:textColor="#A1A1A1"
                 android:textSize="12sp" />
 
@@ -177,7 +209,7 @@
                 android:background="@drawable/card_whole"
                 android:padding="10dp"
                 android:scaleType="fitXY"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rvPrescription"

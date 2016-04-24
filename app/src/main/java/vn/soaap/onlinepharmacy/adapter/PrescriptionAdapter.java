@@ -4,13 +4,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import vn.soaap.onlinepharmacy.R;
 import vn.soaap.onlinepharmacy.entities.Drug;
 import vn.soaap.onlinepharmacy.recyclerview.RecyclerViewAdapter;
@@ -21,18 +21,17 @@ import vn.soaap.onlinepharmacy.recyclerview.RecyclerViewAdapter;
 public class PrescriptionAdapter extends RecyclerViewAdapter<Drug, PrescriptionAdapter.DrugViewHolder> {
 
     List<Drug> items;
+
     public static class DrugViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView tvDrugName;
-        public TextView tvDrugQuan;
+        @Bind(R.id.tv_item_drug_name)
+        TextView tvDrugName;
+        @Bind(R.id.tv_item_drug_quantities)
+        TextView tvDrugQuan;
 
         public DrugViewHolder(View itemView) {
             super(itemView);
-
-            tvDrugName = (TextView)
-                    itemView.findViewById(R.id.tv_item_drug_name);
-            tvDrugQuan = (TextView)
-                    itemView.findViewById(R.id.tv_item_drug_quantities);
+            ButterKnife.bind(this, itemView);
         }
     }
 
@@ -54,7 +53,7 @@ public class PrescriptionAdapter extends RecyclerViewAdapter<Drug, PrescriptionA
         super.onBindViewHolder(viewHolder, position);
         Drug drug = items.get(position);
         viewHolder.tvDrugName.setText(String.valueOf(position + 1) + ". " + drug.getName());
-        viewHolder.tvDrugQuan.setText("Số lượng : " + String.valueOf(drug.getQuatities()));
+        viewHolder.tvDrugQuan.setText("Số lượng : " + String.valueOf(drug.getQuatity()));
     }
 
     @Override

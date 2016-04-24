@@ -7,12 +7,12 @@ public class Drug {
 
     int id;
     String name;
-    int quatities;
+    int quantity;
 
     public Drug(int id, String name) {
         this.id = id;
         this.name = name;
-        this.quatities = 0;
+        this.quantity = 0;
     }
 
     public int getId() {
@@ -31,11 +31,11 @@ public class Drug {
         this.name = name;
     }
 
-    public int getQuatities() {
-        return quatities;
+    public int getQuatity() {
+        return quantity;
     }
 
-    public void setQuatities(int quatities) {
-        this.quatities = quatities;
+    public void setQuatity(int quantity) {
+        this.quantity = quantity;
     }
 }
