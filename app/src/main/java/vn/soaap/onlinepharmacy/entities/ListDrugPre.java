@@ -1,5 +1,6 @@
 package vn.soaap.onlinepharmacy.entities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -41,7 +42,7 @@ public class ListDrugPre extends Prescription {
 
     boolean result =false;
     @Override
-    public boolean send(Context context) {
+    public boolean send(Activity context) {
         if (user == null || drugs == null)
             return false;
 

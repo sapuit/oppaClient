@@ -1,5 +1,8 @@
 package vn.soaap.onlinepharmacy.entities;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,6 +23,7 @@ import java.io.UnsupportedEncodingException;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
+import vn.soaap.onlinepharmacy.activity.DrugsInputActivity;
 import vn.soaap.onlinepharmacy.server.RequestHandler;
 import vn.soaap.onlinepharmacy.server.RequestListener;
 import vn.soaap.onlinepharmacy.util.GlobalParams;
@@ -56,7 +60,7 @@ public class ImagePre extends Prescription {
 
     boolean result = false;
     @Override
-    public boolean send(Context context) {
+    public boolean send(Activity context) {
         if (user == null || image == null)
             return false;
 

@@ -1,5 +1,6 @@
 package vn.soaap.onlinepharmacy.activity;
 
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -63,6 +64,8 @@ public class DrugsInputActivity extends AppCompatActivity
     RecyclerView recyclerView;
     @Bind(R.id.fab)
     FloatingActionButton fab;
+
+    private ProgressDialog statusDialog;
 //    private PullScrollView mScrollView;
 //    private ImageView mHeadImg;
 
@@ -201,11 +204,11 @@ public class DrugsInputActivity extends AppCompatActivity
     public void sendPrescription() {
         try {
             if (action == 1)
-                imagePre.send(getBaseContext());
+                imagePre.send(DrugsInputActivity.this);
             else {
                 if (drugs != null && drugs.size() != 0) {
                     ListDrugPre drugPre = new ListDrugPre(user, drugs);
-                    result = drugPre.send(getBaseContext());
+                    result = drugPre.send(DrugsInputActivity.this);
                 } else
                     Toast.makeText(DrugsInputActivity.this,
                             "Vui lòng thêm thuốc vào toa của bạn ! ",
@@ -339,7 +342,6 @@ public class DrugsInputActivity extends AppCompatActivity
         dialog.show();
         positiveAction.setEnabled(false);
     }
-
 
     private void addDrug() {
         String drugName = etDrugName.getText().toString().trim();

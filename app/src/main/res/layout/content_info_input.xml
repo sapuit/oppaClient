@@ -68,7 +68,9 @@
                     android:singleLine="true"
                     android:textSize="15sp"
                     app:met_clearButton="true"
-                    app:met_floatingLabel="highlight" />
+                    app:met_floatingLabel="highlight"
+                    app:met_minCharacters="3"
+                    app:met_maxCharacters="25"/>
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/etPhoneNum"
@@ -79,7 +81,9 @@
                     android:maxLength="15"
                     android:singleLine="true"
                     android:textSize="15sp"
-                    app:met_floatingLabel="highlight" />
+                    app:met_floatingLabel="highlight"
+                    app:met_minCharacters="9"
+                    app:met_maxCharacters="11"/>
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/etAddress"
@@ -92,6 +96,8 @@
                     android:singleLine="true"
                     android:textSize="15sp"
                     app:met_clearButton="true"
+                    app:met_minCharacters="3"
+                    app:met_maxCharacters="125"
                     app:met_floatingLabel="highlight" />
 
 
@@ -112,11 +118,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorBackgroundBtn"
-            android:drawableRight="@mipmap/ic_next_gray"
+            android:drawableRight="@mipmap/ic_next_black"
             android:gravity="end|center"
             android:paddingRight="20dp"
             android:text="Tiếp theo "
-            android:textColor="@color/secondary_text_dark"
+
             android:textSize="15sp" />
 
 

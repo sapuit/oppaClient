@@ -1,5 +1,6 @@
 package vn.soaap.onlinepharmacy.entities;
 
+import android.app.Activity;
 import android.content.Context;
 
 /**
@@ -14,5 +15,5 @@ public abstract class Prescription implements Action {
     }
 
     @Override
-    public abstract boolean send(Context context);
+    public abstract boolean send(Activity context);
 }
