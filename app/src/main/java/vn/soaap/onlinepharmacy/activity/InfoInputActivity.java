@@ -16,6 +16,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -37,8 +38,8 @@ public class InfoInputActivity extends AppCompatActivity {
     public  static final int CAMERA_IMAGE_REQUEST  = 2;
     public  static final int CAMERA_PERMISSIONS_REQUEST = 3;
     private static final String TAG = MainActivity.class.getSimpleName();
-    private int    action;
-    public  String FILE_NAME = "image.jpg";
+    private int      action;
+    public  String   FILE_NAME = "image.jpg";
     private ImagePre imagePre;
 
 //    View
@@ -79,73 +80,23 @@ public class InfoInputActivity extends AppCompatActivity {
         etName.setText("Nguyen kien phuoc ");
         etPhoneNum.setText("3242355435");
         etAddress.setText("123 tan phu");
-        etAddress.setEnabled(etPhoneNum.getText().length() > 3);
-        etPhoneNum.setEnabled(etName.getText().length() > 3);
-        footer_next.setEnabled(etAddress.getText().length() > 3);
 
-
-        etName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                etPhoneNum.setEnabled(s.toString().trim().length() > 3);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-        etPhoneNum.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                int minimum = 6;
-                etAddress.setEnabled(s.toString().trim().length() > minimum);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-        etAddress.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                footer_next.setEnabled(s.toString().trim().length() > 6);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                int minimum = 6;
-                footer_next.setEnabled(s.toString().trim().length() > minimum);
-                if (s.toString().trim().length() > minimum) {
-                    footer_next.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ic_next_black, 0);
-                    footer_next.setTextColor(Color.BLACK);
-                } else {
-                    footer_next.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.mipmap.ic_next_gray, 0);
-                    footer_next.setTextColor(Color.parseColor("#d7d7d7"));
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
     }
 
     @OnClick(R.id.footer_next)
     public void clickNext(){
-        final Intent intent = new Intent(this, DrugsInputActivity.class);
 
         String name = etName.getText().toString();
         String address = etAddress.getText().toString();
         String phoneNum = etPhoneNum.getText().toString();
+
+        if (name.length() <3 || address.length() <3 || phoneNum.length() <8 )
+        {
+            Toast.makeText(this,"Vui lòng nhập đầy đủ thông tin",Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        final Intent intent = new Intent(this, DrugsInputActivity.class);
 
         Bundle bundle = new Bundle();
         bundle.putString("name",     name);
