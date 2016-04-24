@@ -198,7 +198,7 @@ public class DrugsInputActivity extends AppCompatActivity
     }
 
     @OnClick(R.id.fab)
-    private void sendPrescription() {
+    public void sendPrescription() {
         try {
             if (action == 1)
                 imagePre.send(getBaseContext());
