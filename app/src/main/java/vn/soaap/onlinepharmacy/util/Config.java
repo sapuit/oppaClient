@@ -3,7 +3,7 @@ package vn.soaap.onlinepharmacy.util;
 /**
  * Created by sapui on 4/11/2016.
  */
-public class GlobalParams {
+public class Config {
 
     public static final String UPLOAD_URL = "http://192.168.56.1/www/oppaServer/prescription/post-image";
     public static final String UPLOAD_LIST_URL = "http://192.168.56.1/www/oppaServer/prescription/post-drugs";

@@ -1,4 +1,4 @@
-package vn.soaap.onlinepharmacy.server;
+package vn.soaap.onlinepharmacy.download;
 
 import cz.msebera.android.httpclient.Header;
 

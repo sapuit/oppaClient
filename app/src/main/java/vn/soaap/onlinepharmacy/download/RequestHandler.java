@@ -1,8 +1,7 @@
-package vn.soaap.onlinepharmacy.server;
+package vn.soaap.onlinepharmacy.download;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
@@ -17,7 +16,6 @@ import java.io.UnsupportedEncodingException;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
 import vn.soaap.onlinepharmacy.R;
-import vn.soaap.onlinepharmacy.activity.DrugsInputActivity;
 
 /**
  * Created by Administrator on 3/21/2016.
@@ -31,7 +29,6 @@ public class RequestHandler {
 
     private RequestHandler() {
         client = new AsyncHttpClient();
-
     }
 
     public static RequestHandler getInstance() {
@@ -133,31 +130,7 @@ public class RequestHandler {
                 Log.e(" POST FAILED ", context.getClass().getSimpleName() + " -> " + e.getLocalizedMessage());
 
                 if (DUtils.isDebuggable(context) && SHOW_DEBUG_ALERT_DIALOG) {
-//
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//                    builder.setTitle(" ERROR ");
-//                    String error_msg;
-//                    if (errorResponse != null) {
-//                        try {
-//                            error_msg = String.valueOf(new String(errorResponse, "UTF-8"));
-//                        } catch (UnsupportedEncodingException e1) {
-//                            error_msg = e.getLocalizedMessage();
-//                        }
-//                    } else {
-//                        error_msg = e.getLocalizedMessage();
-//                    }
-//
-//                    builder.setMessage(context.getClass().getSimpleName() + " -> " + error_msg)
-//                            .setCancelable(true)
-//                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                                public void onClick(DialogInterface dialog, int id) {
-//                                    dialog.dismiss();
-//                                }
-//                            });
-//                    AlertDialog alert = builder.create();
-//                    alert.show();
                     dialog.dismiss();
-
                     new AlertDialogWrapper.Builder(context)
                             .setTitle("Gửi không thành công")
                             .setMessage("Vui lòng kiểm tra lại kết nối internet hoặc liên hệ với chúng tôi theo sô điện thọa 0987654321")
@@ -173,6 +146,7 @@ public class RequestHandler {
             @Override
             public void onRetry(int retryNo) {
                 Log.e("RETRYING ", "....." + String.valueOf(retryNo));
+                dialog.dismiss();
             }
         });
     }

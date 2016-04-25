@@ -1,4 +1,4 @@
-package vn.soaap.onlinepharmacy.server;
+package vn.soaap.onlinepharmacy.download;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
