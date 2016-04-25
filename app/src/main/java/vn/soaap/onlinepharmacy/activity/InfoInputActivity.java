@@ -2,6 +2,7 @@ package vn.soaap.onlinepharmacy.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -13,6 +14,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -21,6 +24,9 @@ import android.widget.Toast;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -39,8 +45,8 @@ public class InfoInputActivity extends AppCompatActivity {
     public  static final int CAMERA_PERMISSIONS_REQUEST = 3;
     private static final String TAG = MainActivity.class.getSimpleName();
     private int      action;
-    public  String   FILE_NAME = "image.jpg";
     private ImagePre imagePre;
+    String FILE_NAME = "prescription.jpg";
 
 //    View
     @Bind(R.id.footer_next)
@@ -62,6 +68,9 @@ public class InfoInputActivity extends AppCompatActivity {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             getWindow().setNavigationBarColor(colorPrimaryDark);
 
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        FILE_NAME = "prescription_" + timeStamp + ".jpg";
+
         action = getIntent().getIntExtra("action", 0);
         if (action == 0)    //  select input prescription by hand
             initView();
@@ -70,17 +79,10 @@ public class InfoInputActivity extends AppCompatActivity {
     }
 
     private void initView() {
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setEnabled(false);
-//        fab.setBackgroundColor(getResources().getColor(R.color.colorDivider));
 
         etName.setText("Nguyen kien phuoc ");
         etPhoneNum.setText("3242355435");
         etAddress.setText("123 tan phu");
-
     }
 
     @OnClick(R.id.footer_next)
@@ -99,9 +101,9 @@ public class InfoInputActivity extends AppCompatActivity {
         final Intent intent = new Intent(this, DrugsInputActivity.class);
 
         Bundle bundle = new Bundle();
-        bundle.putString("name",     name);
-        bundle.putString("address",  address);
-        bundle.putString("phoneNum", phoneNum);
+        bundle.putString("name",name);
+        bundle.putString("address",address);
+        bundle.putString("phoneNum",phoneNum);
         bundle.putInt("action", action);
 
         if (action == 1)
@@ -111,6 +113,7 @@ public class InfoInputActivity extends AppCompatActivity {
     }
 
     public void startGalleryChooser() {
+
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -130,7 +133,6 @@ public class InfoInputActivity extends AppCompatActivity {
     }
 
     public File getCameraFile() {
-
         File dir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
         return new File(dir, FILE_NAME);
@@ -140,20 +142,18 @@ public class InfoInputActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GALLERY_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-             imagePre = new ImagePre(
+            imagePre = new ImagePre(
                     getBaseContext(),
                     new User(),
                     data.getData());
             initView();
-//            imageHandle = new ImageHandle(this, data, 1);
         } else if (requestCode == CAMERA_IMAGE_REQUEST && resultCode == RESULT_OK) {
 
              imagePre = new ImagePre(
-                    getBaseContext(),
+                     getApplicationContext(),
                     new User(),
                     Uri.fromFile(getCameraFile()));
              initView();
-//            imageHandle = new ImageHandle(this, data, 2);
         } else {
             RelativeLayout rl_info = (RelativeLayout) findViewById(R.id.rl_info);
             final Snackbar snackbar = Snackbar

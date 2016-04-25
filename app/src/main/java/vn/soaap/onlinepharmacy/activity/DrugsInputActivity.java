@@ -33,6 +33,7 @@ import vn.soaap.onlinepharmacy.entities.ListDrugPre;
 import vn.soaap.onlinepharmacy.entities.User;
 import vn.soaap.onlinepharmacy.recyclerview.ItemTouchListenerAdapter;
 import vn.soaap.onlinepharmacy.recyclerview.SwipeToDismissTouchListener;
+import vn.soaap.onlinepharmacy.util.NetworkHelper;
 
 public class DrugsInputActivity extends AppCompatActivity
         implements ItemTouchListenerAdapter.RecyclerViewOnItemClickListener {
@@ -202,6 +203,9 @@ public class DrugsInputActivity extends AppCompatActivity
 
     @OnClick(R.id.fab)
     public void sendPrescription() {
+        if (! NetworkHelper.isNetworkConnected(getApplicationContext()))
+            return;
+
         try {
             if (action == 1)
                 imagePre.send(DrugsInputActivity.this);

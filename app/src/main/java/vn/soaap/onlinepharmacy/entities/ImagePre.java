@@ -1,8 +1,6 @@
 package vn.soaap.onlinepharmacy.entities;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,10 +21,9 @@ import java.io.UnsupportedEncodingException;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
-import vn.soaap.onlinepharmacy.activity.DrugsInputActivity;
-import vn.soaap.onlinepharmacy.server.RequestHandler;
-import vn.soaap.onlinepharmacy.server.RequestListener;
-import vn.soaap.onlinepharmacy.util.GlobalParams;
+import vn.soaap.onlinepharmacy.download.RequestHandler;
+import vn.soaap.onlinepharmacy.download.RequestListener;
+import vn.soaap.onlinepharmacy.util.Config;
 
 /**
  * Created by sapui on 4/11/2016.
@@ -68,25 +65,26 @@ public class ImagePre extends Prescription {
         StringEntity entity = null;
         try {
             String image = getStringImage(getImage());
-            params.put(GlobalParams.KEY_NAME, user.getName());
-            params.put(GlobalParams.KEY_PHONE, user.getPhone());
-            params.put(GlobalParams.KEY_ADDR, user.getAddress());
-//            params.put(GlobalParams.KEY_EMAIL, "example@gmail.com");
-            params.put(GlobalParams.KEY_IMAGE, image);
+            params.put(Config.KEY_NAME, user.getName());
+            params.put(Config.KEY_PHONE, user.getPhone());
+            params.put(Config.KEY_ADDR, user.getAddress());
+            //  params.put(Config.KEY_EMAIL, "example@gmail.com");
+            params.put(Config.KEY_IMAGE, image);
 
             entity = new StringEntity(params.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        RequestHandler handler = RequestHandler.getInstance();
 
-        handler.make_post_Request(context, entity, GlobalParams.UPLOAD_URL, new RequestListener() {
+        RequestHandler handler = RequestHandler.getInstance();
+        handler.make_post_Request(context, entity, Config.UPLOAD_URL, new RequestListener() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                 try {
                     String server_response = String.valueOf(new String(response, "UTF-8"));
+                    Log.i("sendRequest", server_response);
                     if (server_response.equals("OK")) {
-                        Log.i("sendRequest", server_response);
+
                         result = true;
                     }
                 } catch (UnsupportedEncodingException e1) {
