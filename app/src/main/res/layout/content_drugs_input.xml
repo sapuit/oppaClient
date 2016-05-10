@@ -66,8 +66,8 @@
                     android:layout_toLeftOf="@+id/btn_add_drug">
 
                     <ImageView
-                        android:layout_width="50px"
-                        android:layout_height="50px"
+                        android:layout_width="40px"
+                        android:layout_height="40px"
                         android:layout_marginRight="5dp"
                         android:src="@mipmap/ic_phone"
                         />
@@ -97,8 +97,8 @@
                     android:layout_toLeftOf="@+id/btn_add_drug">
 
                     <ImageView
-                        android:layout_width="50px"
-                        android:layout_height="50px"
+                        android:layout_width="40px"
+                        android:layout_height="40px"
                         android:layout_marginRight="5dp"
                         android:src="@mipmap/ic_adress" />
 
@@ -147,14 +147,12 @@
                 android:layout_marginLeft="21dp"
                 android:layout_marginRight="21dp"
                 android:layout_marginTop="10dp">
-
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1px"
                     android:layout_marginTop="5dp"
                     android:background="#DFDFDF"
                     android:contentDescription="@null" />
-
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

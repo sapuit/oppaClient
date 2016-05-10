@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -21,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
+import vn.soaap.onlinepharmacy.app.MyApplication;
 import vn.soaap.onlinepharmacy.download.RequestHandler;
 import vn.soaap.onlinepharmacy.download.RequestListener;
 import vn.soaap.onlinepharmacy.util.Config;
@@ -30,6 +32,7 @@ import vn.soaap.onlinepharmacy.util.Config;
  */
 public class ImagePre extends Prescription {
 
+    private static final String TAG = ImagePre.class.getSimpleName();
     private Bitmap image;
 
     public ImagePre(User user) {
@@ -58,6 +61,7 @@ public class ImagePre extends Prescription {
     boolean result = false;
     @Override
     public boolean send(Activity context) {
+        user = MyApplication.getInstance().getPrefManager().getUser();
         if (user == null || image == null)
             return false;
 
@@ -68,7 +72,7 @@ public class ImagePre extends Prescription {
             params.put(Config.KEY_NAME, user.getName());
             params.put(Config.KEY_PHONE, user.getPhone());
             params.put(Config.KEY_ADDR, user.getAddress());
-            //  params.put(Config.KEY_EMAIL, "example@gmail.com");
+            params.put(Config.KEY_TOKEN, user.getToken());
             params.put(Config.KEY_IMAGE, image);
 
             entity = new StringEntity(params.toString());
@@ -82,13 +86,12 @@ public class ImagePre extends Prescription {
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                 try {
                     String server_response = String.valueOf(new String(response, "UTF-8"));
-                    Log.i("sendRequest", server_response);
-                    if (server_response.equals("OK")) {
-
+                    Log.e(TAG, server_response);
+                    if (server_response.equals("0")) {
                         result = true;
                     }
                 } catch (UnsupportedEncodingException e1) {
-                    Log.i("sendRequest", e1.getMessage());
+                    Log.e(TAG, e1.getMessage());
                     result = false;
                 }
             }

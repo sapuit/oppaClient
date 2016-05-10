@@ -39,7 +39,6 @@ import vn.soaap.onlinepharmacy.util.PermissionUtils;
 
 public class InfoInputActivity extends AppCompatActivity {
 
-
     private static final int GALLERY_IMAGE_REQUEST = 1;
     public  static final int CAMERA_IMAGE_REQUEST  = 2;
     public  static final int CAMERA_PERMISSIONS_REQUEST = 3;
@@ -48,7 +47,7 @@ public class InfoInputActivity extends AppCompatActivity {
     private ImagePre imagePre;
     String FILE_NAME = "prescription.jpg";
 
-//    View
+    //  View
     @Bind(R.id.footer_next)
     Button footer_next;
     @Bind(R.id.etAddress)

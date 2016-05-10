@@ -1,13 +1,16 @@
 package vn.soaap.onlinepharmacy.entities;
 
+import java.io.Serializable;
+
 /**
  * Created by sapui on 4/11/2016.
  */
-public class User{
+public class User implements Serializable {
 
     String name;
     String phone;
     String address;
+    String token;
 
     public User() {
     }
@@ -16,6 +19,13 @@ public class User{
         this.name = name;
         this.phone = phone;
         this.address = address;
+    }
+
+    public User(String name, String phone, String address, String token) {
+        this.name = name;
+        this.phone = phone;
+        this.address = address;
+        this.token = token;
     }
 
     public String getName() {
@@ -42,4 +52,11 @@ public class User{
         this.address = address;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 }

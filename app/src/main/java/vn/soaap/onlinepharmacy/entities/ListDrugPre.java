@@ -11,6 +11,7 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
+import vn.soaap.onlinepharmacy.app.MyApplication;
 import vn.soaap.onlinepharmacy.download.RequestHandler;
 import vn.soaap.onlinepharmacy.download.RequestListener;
 import vn.soaap.onlinepharmacy.util.Config;
@@ -39,10 +40,12 @@ public class ListDrugPre extends Prescription {
         this.drugs = drugs;
     }
 
-    boolean result =false;
+    boolean result = false;
     @Override
     public boolean send(Activity context) {
-        if (user == null || drugs == null)
+
+        user = MyApplication.getInstance().getPrefManager().getUser();
+        if (user == null || drugs == null && drugs.size() == 0)
             return false;
 
         JSONObject params = new JSONObject();
@@ -61,6 +64,7 @@ public class ListDrugPre extends Prescription {
             params.put(Config.KEY_NAME,  user.getName());
             params.put(Config.KEY_PHONE, user.getPhone());
             params.put(Config.KEY_ADDR,  user.getAddress());
+            params.put(Config.KEY_TOKEN,  user.getToken());
             //  params.put(Config.KEY_EMAIL, "example@gmail.com");
 
             entity = new StringEntity(params.toString());

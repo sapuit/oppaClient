@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
@@ -16,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
 import vn.soaap.onlinepharmacy.R;
+import vn.soaap.onlinepharmacy.activity.MainActivity;
 
 /**
  * Created by Administrator on 3/21/2016.
@@ -119,6 +121,11 @@ public class RequestHandler {
                         .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                //  back to first activity
+                                Intent i = new Intent(context.getApplicationContext(), MainActivity.class);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                context.startActivity(i);
+
                                 dialog.dismiss();
                             }
                         }).show();
@@ -133,7 +140,7 @@ public class RequestHandler {
                     dialog.dismiss();
                     new AlertDialogWrapper.Builder(context)
                             .setTitle("Gửi không thành công")
-                            .setMessage("Vui lòng kiểm tra lại kết nối internet hoặc liên hệ với chúng tôi theo sô điện thọa 0987654321")
+                            .setMessage("Vui lòng kiểm tra lại kết nối internet.")
                             .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {

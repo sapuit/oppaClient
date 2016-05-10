@@ -1,22 +1,35 @@
 package vn.soaap.onlinepharmacy.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import vn.soaap.onlinepharmacy.R;
+import vn.soaap.onlinepharmacy.app.Config;
+import vn.soaap.onlinepharmacy.gcm.GcmIntentService;
 
 public class MainActivity extends AppCompatActivity
         implements View.OnClickListener {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+
     }
 
     private void initView() {
@@ -37,6 +50,8 @@ public class MainActivity extends AppCompatActivity
 
         btnHandInput.setOnClickListener(this);
         btnImageInput.setOnClickListener(this);
+
+
     }
 
     @Override
@@ -54,4 +69,5 @@ public class MainActivity extends AppCompatActivity
 
         startActivity(intent);
     }
+
 }
