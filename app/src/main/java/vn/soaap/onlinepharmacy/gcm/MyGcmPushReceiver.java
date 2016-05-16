@@ -14,7 +14,7 @@ import vn.soaap.onlinepharmacy.activity.MainActivity;
 import vn.soaap.onlinepharmacy.app.Config;
 
 /**
- * This is a receiver class in which onMessageReceived()
+ * Nhận tất cả các response từ server
  * method will be triggered whenever device receives new push notification
  */
 public class MyGcmPushReceiver extends GcmListenerService {
@@ -28,40 +28,21 @@ public class MyGcmPushReceiver extends GcmListenerService {
         String title = bundle.getString("title");
         String message = bundle.getString("message");
 //        String image = bundle.getString("image");
-        String flag = bundle.getString("flag");
+        int flag = Integer.parseInt(bundle.getString("flag"));
         String timestamp = bundle.getString("created_at");
         Log.e(TAG, "bundle: " + bundle.toString());
 
-        if (flag == null)
-            return;
-
-        if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
-
-            // app is in foreground, broadcast the push message
-            Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
-            pushNotification.putExtra("message", message);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
-
-            // play notification sound
-            NotificationUtils notificationUtils = new NotificationUtils();
-            notificationUtils.playNotificationSound();
-        } else {
-
-            Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
-            resultIntent.putExtra("message", message);
-//            if (TextUtils.isEmpty(image)) {
-            showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
-//            } else {
-//                showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, image);
-//            }
-        }
+        processResend(flag,title,message,timestamp);
     }
 
-    private void processResend(String title, String message, String timestamp) {
+    private void processResend(int flag,String title, String message, String timestamp) {
         if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
+            Log.e(TAG, "App is running");
 
             // app is in foreground, broadcast the push message
             Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
+            pushNotification.putExtra("flag",flag);
+            pushNotification.putExtra("title",title);
             pushNotification.putExtra("message", message);
             LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
 
@@ -69,7 +50,7 @@ public class MyGcmPushReceiver extends GcmListenerService {
             NotificationUtils notificationUtils = new NotificationUtils();
             notificationUtils.playNotificationSound();
         } else {
-
+            Log.e(TAG, "App is running in background");
             Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
             resultIntent.putExtra("message", message);
 

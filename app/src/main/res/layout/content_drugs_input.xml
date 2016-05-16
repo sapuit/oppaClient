@@ -13,7 +13,8 @@
         android:layout_marginTop="-20dp"
         android:contentDescription="@null"
         android:scaleType="fitXY"
-        android:src="@mipmap/im_pharmacy" />
+        android:src="@mipmap/im_pharmacy"
+        android:background="@drawable/shadow"/>
 
 
     <LinearLayout
@@ -55,7 +56,7 @@
                     android:paddingTop="5dp"
                     android:text="Thêm thuốc"
                     android:textColor="#57AF4E"
-                    android:textSize="13sp" />
+                    android:textSize="10sp" />
 
                 <LinearLayout
                     android:id="@+id/ln_phone_num"
@@ -69,15 +70,14 @@
                         android:layout_width="40px"
                         android:layout_height="40px"
                         android:layout_marginRight="5dp"
-                        android:src="@mipmap/ic_phone"
-                        />
+                        android:src="@mipmap/ic_phone" />
 
                     <TextView
                         android:id="@+id/user_phone_num"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:gravity="center_vertical"
                         android:ellipsize="end"
+                        android:gravity="center_vertical"
                         android:singleLine="true"
                         android:text="0987627178"
                         android:textColor="#A1A1A1"
@@ -126,18 +126,33 @@
                 android:padding="1px"
                 android:src="@drawable/avatar_default" />
 
-            <TextView
-                android:id="@+id/user_name"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="13dp"
-                android:layout_toRightOf="@id/user_avatar"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="Nguyễn Kiến Phước"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:layout_toRightOf="@id/user_avatar">
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="13dp"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:shadowColor="@color/colorPrimaryDark"
+                    android:singleLine="true"
+                    android:text="Nguyễn Kiến Phước"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btn_edit_info"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/edit_user_male_96" />
+            </LinearLayout>
 
             <!--<FrameLayout
                 android:id="@+id/user_divider_layout"
@@ -193,9 +208,9 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="Toa thuốc của bạn "
-                android:textStyle="bold"
                 android:textColor="#A1A1A1"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/ivImage"

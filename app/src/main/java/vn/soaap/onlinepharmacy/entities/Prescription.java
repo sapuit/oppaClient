@@ -14,6 +14,14 @@ public abstract class Prescription implements Action {
         this.user = user;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public abstract boolean send(Activity context);
 }

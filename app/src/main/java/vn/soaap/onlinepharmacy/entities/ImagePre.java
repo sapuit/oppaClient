@@ -41,7 +41,6 @@ public class ImagePre extends Prescription {
 
     public ImagePre(Context context, User user, Uri uri) {
         super(user);
-
         try {
             this.image = scaleBitmapDown(MediaStore.Images.Media
                     .getBitmap(context.getContentResolver(), uri), 300);
@@ -61,9 +60,6 @@ public class ImagePre extends Prescription {
     boolean result = false;
     @Override
     public boolean send(Activity context) {
-        user = MyApplication.getInstance().getPrefManager().getUser();
-        if (user == null || image == null)
-            return false;
 
         JSONObject params = new JSONObject();
         StringEntity entity = null;

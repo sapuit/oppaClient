@@ -1,4 +1,4 @@
-package vn.soaap.onlinepharmacy.util;
+package vn.soaap.onlinepharmacy.helper;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -25,8 +25,7 @@ public class NetworkHelper {
 
         boolean b = netInfo != null && netInfo.isConnectedOrConnecting();
         if (!b)
-            Toast.makeText(context, "Vui lòng kết nối internet!", Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(context, "Vui lòng kiểm tra lại kết nối internet!", Toast.LENGTH_SHORT).show();
         return b;
     }
 

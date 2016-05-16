@@ -29,7 +29,6 @@ public class MyPreferenceManager {
     private static final String KEY_USER_NAME = "user_name";
     private static final String KEY_USER_ADDR = "user_address";
     private static final String KEY_USER_PHONE = "user_phone";
-    private static final String KEY_USER_TOKEN = "user_token";
     private static final String KEY_NOTIFICATIONS = "notifications";
 
     //  Contructor
@@ -60,7 +59,6 @@ public class MyPreferenceManager {
         editor.putString(KEY_USER_NAME, user.getName());
         editor.putString(KEY_USER_PHONE, user.getPhone());
         editor.putString(KEY_USER_ADDR, user.getAddress());
-        editor.putString(KEY_USER_TOKEN, user.getToken());
         editor.commit();
 
         Log.e(TAG, "User is stored in shared preferences. " +
@@ -73,8 +71,7 @@ public class MyPreferenceManager {
             name = pref.getString(KEY_USER_NAME, null);
             phone = pref.getString(KEY_USER_PHONE, null);
             addr = pref.getString(KEY_USER_ADDR, null);
-            token = pref.getString(KEY_USER_TOKEN, null);
-            User user = new User( name,phone, addr, token);
+            User user = new User( name,phone, addr);
             return user;
         }
         return null;
