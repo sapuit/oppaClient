@@ -60,6 +60,8 @@
                 android:value="vn.soaap.onlinepharmacy.activity.InfoInputActivity" />
         </activity>
 
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity" />
+
         <!-- START Added for GCM -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

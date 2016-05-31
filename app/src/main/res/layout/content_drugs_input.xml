@@ -4,16 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <ImageView
         android:id="@+id/background_img"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="200dp"
         android:layout_marginTop="-20dp"
         android:contentDescription="@null"
         android:scaleType="fitXY"
-        android:src="@mipmap/im_pharmacy"
+
         android:background="@drawable/shadow"/>
 
 
@@ -27,7 +28,7 @@
             android:id="@+id/scroll_view_head"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_marginTop="190dp"
+            android:layout_marginTop="150dp"
             android:background="@color/transparent"
             android:orientation="vertical">
 
@@ -142,7 +143,7 @@
                     android:singleLine="true"
                     android:text="Nguyễn Kiến Phước"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <Button

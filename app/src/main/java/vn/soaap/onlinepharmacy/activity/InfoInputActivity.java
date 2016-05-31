@@ -24,6 +24,8 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -114,14 +116,30 @@ public class InfoInputActivity extends AppCompatActivity {
         try {
             if (requestCode == GALLERY_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
                 Uri uri = data.getData();
-                image = ImageHelper.scaleBitmapDown(MediaStore.Images.Media
-                        .getBitmap(getApplicationContext().getContentResolver(), uri), 300);
-                init();
+                CropImage.activity(uri)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setInitialRotation(90)
+                        .start(this);
+
             } else if (requestCode == CAMERA_IMAGE_REQUEST && resultCode == RESULT_OK) {
                 Uri uri = Uri.fromFile(imageFile);
-                image = ImageHelper.scaleBitmapDown(MediaStore.Images.Media
-                        .getBitmap(getApplicationContext().getContentResolver(), uri), 300);
-                init();
+                CropImage.activity(uri)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(this);
+
+
+            } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    Uri uri = result.getUri();
+                    image = ImageHelper.scaleBitmapDown(MediaStore.Images.Media
+                            .getBitmap(getApplicationContext().getContentResolver(), uri), 300);
+                    init();
+
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Exception error = result.getError();
+                }
+
             } else {
                 RelativeLayout rl_info = (RelativeLayout) findViewById(R.id.rl_info);
                 final Snackbar snackbar = Snackbar

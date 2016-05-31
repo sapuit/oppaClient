@@ -70,7 +70,7 @@ public class DrugsInputActivity extends AppCompatActivity
     @Bind(R.id.fab)
     FloatingActionButton fab;
     @Bind(R.id.btn_edit_info)
-    FloatingActionButton btnEditInfo;
+    Button btnEditInfo;
 
     private ProgressDialog statusDialog;
 //    private PullScrollView mScrollView;
@@ -336,8 +336,12 @@ public class DrugsInputActivity extends AppCompatActivity
     public void onItemLongClick(RecyclerView parent, View clickedView, int position) {
     }
 
+    private final int EDIT_INFO = 2;
+
     @OnClick(R.id.btn_edit_info)
-    public void editInfo(){
-        startActivity(new Intent(this,InfoInputActivity.class));
+    public void editInfo() {
+        Intent intent = new Intent(this, InfoInputActivity.class);
+        intent.putExtra("action", EDIT_INFO);
+        startActivity(intent);
     }
 }

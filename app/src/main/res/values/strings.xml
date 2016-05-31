@@ -9,4 +9,7 @@
     <string name="suadoi">Sửa đổi</string>
     <string name="please_wait">Vui lòng chờ đợi ...</string>
     <string name="progress_dialog">Đang gửi đơn thuốc</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Cài đặt</string>
 </resources>
