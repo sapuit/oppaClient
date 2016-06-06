@@ -1,36 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/menu_top"
+        android:checkableBehavior="single">
+
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_launcher"
-            android:title="Import" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_launcher"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_launcher"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_launcher"
-            android:title="Tools" />
+            android:id="@+id/nav_main"
+            android:checked="true"
+            android:icon="@drawable/ic_send"
+            android:title="Gửi toa thuốc" />
     </group>
 
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_launcher"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_launcher"
-                android:title="Send" />
-        </menu>
-    </item>
+    <group
+        android:id="@+id/menu_center"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_handle"
+            android:icon="@drawable/ic_action_paste"
+            android:title="Toa thuốc chờ xử lý"
+            />
+
+        <item
+            android:id="@+id/nav_receive"
+            android:icon="@drawable/ic_local_offer"
+            android:title="Toa thuốc chờ giao" />
+
+        <item
+            android:id="@+id/nav_pre"
+            android:icon="@drawable/ic_description"
+            android:title="Tất cả Toa thuốc" />
+    </group>
+
+
+    <group
+        android:id="@+id/menu_bottom"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_edit"
+            android:icon="@drawable/ic_mode_edit"
+            android:title="Chỉnh sửa thông tin" />
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/ic_settings"
+            android:title="Trợ giúp và phản hồi" />
+    </group>
 
 </menu>

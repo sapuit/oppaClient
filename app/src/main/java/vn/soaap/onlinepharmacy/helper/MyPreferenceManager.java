@@ -7,14 +7,16 @@ import android.util.Log;
 import vn.soaap.onlinepharmacy.entities.User;
 
 /**
- * Class này để lưu data vào SharePreference
+ * save data into SharePreference
  */
 public class MyPreferenceManager {
 
     private String TAG = MyPreferenceManager.class.getSimpleName();
 
     SharedPreferences pref;
+
     SharedPreferences.Editor editor;
+
     Context context;
 
     //  shared pref mode
@@ -42,7 +44,7 @@ public class MyPreferenceManager {
     public void addNotification(String notification) {
         // get old notifications
         String oldNotifications = getNotifications();
-        
+
         if (oldNotifications != null) {
             oldNotifications += "|" + notification;
         } else {
@@ -52,7 +54,9 @@ public class MyPreferenceManager {
         editor.commit();
     }
 
-    public String getNotifications() {return pref.getString(KEY_NOTIFICATIONS, null);    }
+    public String getNotifications() {
+        return pref.getString(KEY_NOTIFICATIONS, null);
+    }
 
     public void storeUser(User user) {
 //        editor.putString(KEY_USER_ID, user.getId());
@@ -67,11 +71,11 @@ public class MyPreferenceManager {
 
     public User getUser() {
         if (pref.getString(KEY_USER_PHONE, null) != null) {
-            String  name,phone, addr, token;
+            String name, phone, addr, token;
             name = pref.getString(KEY_USER_NAME, null);
             phone = pref.getString(KEY_USER_PHONE, null);
             addr = pref.getString(KEY_USER_ADDR, null);
-            User user = new User( name,phone, addr);
+            User user = new User(name, phone, addr);
             return user;
         }
         return null;

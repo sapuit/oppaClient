@@ -1,4 +1,4 @@
-package vn.soaap.onlinepharmacy.adapter;
+package vn.soaap.onlinepharmacy.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +13,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import vn.soaap.onlinepharmacy.R;
 import vn.soaap.onlinepharmacy.entities.Drug;
-import vn.soaap.onlinepharmacy.recyclerview.RecyclerViewAdapter;
+import vn.soaap.onlinepharmacy.view.recyclerview.RecyclerViewAdapter;
 
 /**
  * Created by sapui on 2/15/2016.

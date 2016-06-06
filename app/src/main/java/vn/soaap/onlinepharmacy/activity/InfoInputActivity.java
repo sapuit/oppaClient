@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -48,29 +49,41 @@ import vn.soaap.onlinepharmacy.util.PermissionUtils;
 public class InfoInputActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
     private static final int GALLERY_IMAGE_REQUEST = 1;
+
     public static final int CAMERA_IMAGE_REQUEST = 2;
+
     public static final int CAMERA_PERMISSIONS_REQUEST = 3;
+
     private final int INPUT_HAND = 0;
+
     private final int INPUT_IMAGE = 1;
+
     private final int EDIT_INFO = 2;
+
     private int action;
+
     private Bitmap image;
+
     private User user;
+
     private String token;
+
     private File imageFile;
 
     //  View
-    @Bind(R.id.footer_next)
-    Button footer_next;
-    @Bind(R.id.etAddress)
-    MaterialEditText etAddress;
-    @Bind(R.id.etPhoneNum)
-    MaterialEditText etPhoneNum;
-    @Bind(R.id.etName)
-    MaterialEditText etName;
-    @BindColor(R.color.colorPrimaryDark)
-    int colorPrimaryDark;
+    @Bind(R.id.tvTitle) TextView tvTitle;
+
+    @Bind(R.id.footer_next) Button footer_next;
+
+    @Bind(R.id.etAddress) MaterialEditText etAddress;
+
+    @Bind(R.id.etPhoneNum) MaterialEditText etPhoneNum;
+
+    @Bind(R.id.etName) MaterialEditText etName;
+
+    @BindColor(R.color.colorPrimaryDark) int colorPrimaryDark;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +91,11 @@ public class InfoInputActivity extends AppCompatActivity {
         setContentView(R.layout.activity_info_input);
         ButterKnife.bind(this);
 
+        addEvent();
+    }
+
+
+    private void addEvent() {
         imageFile = getCameraFile();
         action = getIntent().getIntExtra("action", 0);
         user = MyApplication.getInstance().getPrefManager().getUser();
@@ -91,13 +109,16 @@ public class InfoInputActivity extends AppCompatActivity {
                 startCamera();
                 break;
             case EDIT_INFO:
+                footer_next.setText("Hoàn Tất");
+                tvTitle.setText("Chỉnh sửa thông tin cá nhân");
                 etName.setText(user.getName());
                 etPhoneNum.setText(user.getPhone());
                 etAddress.setText(user.getAddress());
+                etName.setSelection(etName.getText().length());
+
                 break;
         }
     }
-
     private void startCamera() {
 
         if (PermissionUtils.requestPermission(this, CAMERA_PERMISSIONS_REQUEST,
@@ -165,10 +186,10 @@ public class InfoInputActivity extends AppCompatActivity {
 
         //  Nếu user đã nhập thông tin thì
         //  không cần hiển thị lại form
-        if (user != null)
-            moveDrugsActivity();
-        else
+        if (user == null)
             user = new User();
+        else
+            moveDrugsActivity();
     }
 
 

@@ -1,7 +1,9 @@
 package vn.soaap.onlinepharmacy.activity;
 
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -18,12 +20,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.andexert.library.RippleView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -35,27 +37,40 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import cz.msebera.android.httpclient.protocol.HTTP;
 import vn.soaap.onlinepharmacy.R;
 import vn.soaap.onlinepharmacy.app.Config;
-import vn.soaap.onlinepharmacy.download.RequestHandler;
-import vn.soaap.onlinepharmacy.download.RequestListener;
+import vn.soaap.onlinepharmacy.app.MyApplication;
+import vn.soaap.onlinepharmacy.entities.User;
+import vn.soaap.onlinepharmacy.util.download.RequestHandler;
+import vn.soaap.onlinepharmacy.util.download.RequestListener;
 import vn.soaap.onlinepharmacy.gcm.GcmIntentService;
 import vn.soaap.onlinepharmacy.helper.NetworkHelper;
+import vn.soaap.onlinepharmacy.view.fragments.MainFragment;
+import vn.soaap.onlinepharmacy.view.fragments.PrescriptionFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
     private final int INPUT_HAND = 0;
+
     private final int INPUT_IMAGE = 1;
 
+    private final int EDIT_INFO = 2;
+
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
     private String token;
 
-    @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.drawer_layout) DrawerLayout drawer;
-    ActionBarDrawerToggle toggle;
-    @Bind(R.id.nav_view) NavigationView navigationView;
+
+    @Bind(R.id.toolbar) Toolbar toolbar;
+
+    @Bind(R.id.nav_view) NavigationView nav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,31 +78,72 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        addView();
         addEvent();
-        getToken();
     }
 
-    private void addEvent() {
+    private void addView() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toggle = new ActionBarDrawerToggle(
+
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction().replace(R.id.fl_main, new MainFragment()).commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // register GCM registration complete receiver
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(Config.REGISTRATION_COMPLETE));
+
+        // register new push message receiver
+        // by doing this, the activity will be notified each time a new message arrives
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(Config.PUSH_NOTIFICATION));
+
+        User user = MyApplication.getInstance().getPrefManager().getUser();
+        if (user != null) {
+            addNavigation(user);
+        } else {
+            nav.setVisibility(View.GONE);
+
+        }
+    }
+
+    private void addNavigation(User user) {
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
+        nav.setNavigationItemSelectedListener(this);
+
+        //  set data navigation
+        View header = nav.getHeaderView(0);
+        TextView txtName = (TextView) header.findViewById(R.id.txtName);
+        TextView txtPhone = (TextView) header.findViewById(R.id.txtPhone);
+        TextView txtAddress = (TextView) header.findViewById(R.id.txtAddress);
+        txtName.setText(user.getName());
+        txtPhone.setText(user.getPhone());
+        txtAddress.setText(user.getAddress());
     }
 
-    public void onClick(View v) {
+    private void addEvent() {
+        getToken();
+    }
 
-        //  Kiểm tra kết nối
+
+    public void onClick(View v) {
+        //  check connect
         if (!NetworkHelper.isNetworkConnected(getApplicationContext()))
             return;
 
-        Log.e(TAG, "GCM registration token" + token);
         if (token == null) {
-            notice("Not get token !");
+            showNotice("Not get token !");
             return;
         }
+
         final Intent intent = new Intent(this, InfoInputActivity.class);
         intent.putExtra("token", token);
 
@@ -116,8 +172,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 // checking for type intent filter
                 if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
                     token = intent.getStringExtra("token");
-//                    Toast.makeText(getApplicationContext(), "GCM registration token: " + token, Toast.LENGTH_LONG).show();
+                    Log.i(TAG, "GCM registration token : " + token);
 
+//                    Toast.makeText(getApplicationContext(), "GCM registration token: " + token, Toast.LENGTH_LONG).show();
                 } else if (intent.getAction().equals(Config.SENT_TOKEN_TO_SERVER)) {
                     // gcm registration id is stored in our server's MySQL
 //                    Toast.makeText(getApplicationContext(), "GCM registration token is stored in server!", Toast.LENGTH_LONG).show();
@@ -161,50 +218,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    private void showNotification(int flag, String title, String message) {
+    private void showNotification(final int flag, String title, String message) {
+
+        String id = "";
+        try {
+            JSONObject obj = new JSONObject(message);
+            id = obj.getString("_id");
+        } catch (Throwable t) {
+        }
 
         MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
-
         builder.title(title);
         //  xác nhận lấy toa thuốc
         if (flag == 2) {
             builder.content("Xử lý toa thuốc hoàn tất. Vui lòng xác nhận lại để nhận thuốc tại quầy.");
+            final String finalId = id;
             builder.positiveText("Xác nhận")
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            try {
-                                JSONObject jsonObject = new JSONObject();
-                                jsonObject.put("flag", "1");
-                                StringEntity entity = new StringEntity(jsonObject.toString());
-
-                                RequestHandler handler = RequestHandler.getInstance();
-                                handler.make_post_Request(MainActivity.this, entity,
-                                        vn.soaap.onlinepharmacy.util.Config.CONFORM_URL, new RequestListener() {
-                                            @Override
-                                            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-                                                try {
-                                                    String server_response = String.valueOf(new String(response, "UTF-8"));
-                                                    if (server_response.equals("0")) {
-
-                                                    }
-                                                } catch (UnsupportedEncodingException e1) {
-                                                    Log.e(TAG, e1.getMessage());
-
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-
-                                            }
-                                        });
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    })
-                    .negativeText("Hủy bỏ");
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        sendRequest("1", finalId, token);
+                    }
+                })
+                .negativeText("Hủy bỏ")
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        sendRequest("0", finalId, token);
+                    }
+                });
         } else {
             builder.content(message)
                     .positiveText("Đóng");
@@ -214,18 +258,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dialog.show();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    private void sendRequest(String flag, String finalId, String token) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("flag", flag);
+            jsonObject.put("id", finalId);
+            jsonObject.put("token", token);
+            Log.i(TAG,jsonObject.toString());
 
-        // register GCM registration complete receiver
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(Config.REGISTRATION_COMPLETE));
+            RequestHandler handler = RequestHandler.getInstance();
+            handler.make_post_Request(MainActivity.this, jsonObject,
+                    Config.URL_CONFORM, new RequestListener() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+                            try {
+                                String server_response = String.valueOf(new String(response, "UTF-8"));
+                                if (server_response.equals("OK")) {
+                                    new AlertDialogWrapper.Builder(getApplicationContext())
+                                            .setTitle("Xác nhận thành công")
+                                            .setMessage("Vui lòng đến quầy thuốc để nhận thuốc.")
+                                            .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            }).show();
+                                }
+                            } catch (UnsupportedEncodingException e1) {
+                                Log.e(TAG, e1.getMessage());
+                            }
+                        }
 
-        // register new push message receiver
-        // by doing this, the activity will be notified each time a new message arrives
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(Config.PUSH_NOTIFICATION));
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {}
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -251,10 +320,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        int id = item.getItemId();
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -262,26 +331,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
+        FragmentManager fm = getFragmentManager();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-            notice("gallery");
-        } else if (id == R.id.nav_slideshow) {
-            notice("slideshow");
-        } else if (id == R.id.nav_manage) {
-            notice("manage");
-        } else if (id == R.id.nav_share) {
-            notice("share");
-        } else if (id == R.id.nav_send) {
-            notice("Send");
+        switch (id) {
+            case R.id.nav_main:
+                fm.beginTransaction().replace(R.id.fl_main, new MainFragment()).commit();
+                break;
+
+            case R.id.nav_handle:
+                break;
+
+            case R.id.nav_receive:
+                break;
+
+            case R.id.nav_pre:
+                fm.beginTransaction().replace(R.id.fl_main, new PrescriptionFragment()).commit();
+                break;
+
+            case R.id.nav_edit:
+                Intent intent = new Intent(this, InfoInputActivity.class);
+                intent.putExtra("action", EDIT_INFO);
+                startActivity(intent);
+                break;
+
+            case R.id.nav_help:
+                break;
+
+            default:
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    public void notice(String s) {
+    public void showNotice(String s) {
         Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
     }
 }

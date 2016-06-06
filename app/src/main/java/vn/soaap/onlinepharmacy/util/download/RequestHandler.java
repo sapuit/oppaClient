@@ -1,4 +1,4 @@
-package vn.soaap.onlinepharmacy.download;
+package vn.soaap.onlinepharmacy.util.download;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,6 +12,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
+import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 
 import cz.msebera.android.httpclient.Header;
@@ -23,7 +25,7 @@ import vn.soaap.onlinepharmacy.activity.MainActivity;
  * Created by Administrator on 3/21/2016.
  */
 public class RequestHandler {
-
+    private static String TAG = "RequestHandler";
     private static RequestHandler instance;
 
     private AsyncHttpClient client;
@@ -57,8 +59,8 @@ public class RequestHandler {
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
                 listener.onFailure(statusCode, headers, errorResponse,e);
-                Log.e(" GET FAILED ", url);
-                Log.e(" GET FAILED ", e.getLocalizedMessage());
+                Log.e(TAG, url);
+                Log.e(TAG, e.getLocalizedMessage());
 
                 if (DUtils.isDebuggable(context) && SHOW_DEBUG_ALERT_DIALOG) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -94,14 +96,16 @@ public class RequestHandler {
         });
     }
 
-    public void make_post_Request(final Activity context, final StringEntity entity, final String url, final RequestListener listener) {
-        client.post(context, url, entity, "application/json", new AsyncHttpResponseHandler() {
+    public void make_post_Request(final Activity context, final JSONObject jsonObject, final String url, final RequestListener listener) {
+        StringEntity entity =  new StringEntity(jsonObject.toString(), "UTF-8");
+
+        client.post(context, url,entity , "application/json", new AsyncHttpResponseHandler() {
 
             MaterialDialog dialog;
             @Override
             public void onStart() {
-                Log.v(" POST ", "Start");
-                Log.v(" POST ", url);
+                Log.v(TAG, "Start");
+                Log.v(TAG, url);
                  dialog =  new MaterialDialog.Builder(context)
                         .title(R.string.progress_dialog)
                         .content(R.string.please_wait)
@@ -113,34 +117,18 @@ public class RequestHandler {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                 listener.onSuccess(statusCode, headers, response);
-                Log.v(" POST ", "Success");
+                Log.v(TAG, "Success");
                 dialog.dismiss();
-                new AlertDialogWrapper.Builder(context)
-                        .setTitle("Gửi thành công")
-                        .setMessage("Đơn thuốc đang được xử lý. Vui lòng chờ đợi kết quả trong ít phút.")
-                        .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //  back to first activity
-                                Intent i = new Intent(context.getApplicationContext(), MainActivity.class);
-                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                context.startActivity(i);
-
-                                dialog.dismiss();
-                            }
-                        }).show();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-                Log.e(" POST FAILED ", url);
                 Log.e(" POST FAILED ", context.getClass().getSimpleName() + " -> " + e.getLocalizedMessage());
-
                 if (DUtils.isDebuggable(context) && SHOW_DEBUG_ALERT_DIALOG) {
                     dialog.dismiss();
                     new AlertDialogWrapper.Builder(context)
                             .setTitle("Gửi không thành công")
-                            .setMessage("Vui lòng kiểm tra lại kết nối internet.")
+                            .setMessage("Vui lòng kiểm tra lại kết nối hoặc liên hệ trực tiếp với nhà thuốc.")
                             .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -153,7 +141,6 @@ public class RequestHandler {
             @Override
             public void onRetry(int retryNo) {
                 Log.e("RETRYING ", "....." + String.valueOf(retryNo));
-                dialog.dismiss();
             }
         });
     }

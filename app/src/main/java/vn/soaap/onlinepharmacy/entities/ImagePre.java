@@ -2,6 +2,7 @@ package vn.soaap.onlinepharmacy.entities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -10,7 +11,8 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 
-import org.json.JSONException;
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -22,18 +24,18 @@ import java.io.UnsupportedEncodingException;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
-import vn.soaap.onlinepharmacy.app.MyApplication;
-import vn.soaap.onlinepharmacy.download.RequestHandler;
-import vn.soaap.onlinepharmacy.download.RequestListener;
-import vn.soaap.onlinepharmacy.util.Config;
+import vn.soaap.onlinepharmacy.R;
+import vn.soaap.onlinepharmacy.activity.MainActivity;
+import vn.soaap.onlinepharmacy.app.Config;
+import vn.soaap.onlinepharmacy.util.download.RequestHandler;
+import vn.soaap.onlinepharmacy.util.download.RequestListener;
 
-/**
- * Created by sapui on 4/11/2016.
- */
+
 public class ImagePre extends Prescription {
-
     private static final String TAG = ImagePre.class.getSimpleName();
+
     private Bitmap image;
+
 
     public ImagePre(User user) {
         super(user);
@@ -57,52 +59,55 @@ public class ImagePre extends Prescription {
         this.image = image;
     }
 
-    boolean result = false;
+
     @Override
-    public boolean send(Activity context) {
+    public boolean send(final Activity context) {
 
         JSONObject params = new JSONObject();
-        StringEntity entity = null;
         try {
             String image = getStringImage(getImage());
-            params.put(Config.KEY_NAME, user.getName());
-            params.put(Config.KEY_PHONE, user.getPhone());
-            params.put(Config.KEY_ADDR, user.getAddress());
-            params.put(Config.KEY_TOKEN, user.getToken());
-            params.put(Config.KEY_IMAGE, image);
-
-            entity = new StringEntity(params.toString());
+            params.put(context.getString(R.string.key_name), user.getName());
+            params.put(context.getString(R.string.key_phone), user.getPhone());
+            params.put(context.getString(R.string.key_address), user.getAddress());
+            params.put(context.getString(R.string.key_token), user.getToken());
+            params.put(context.getString(R.string.key_image), image);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         RequestHandler handler = RequestHandler.getInstance();
-        handler.make_post_Request(context, entity, Config.UPLOAD_URL, new RequestListener() {
+        handler.make_post_Request(context, params, Config.URL_UPLOAD, new RequestListener() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                 try {
                     String server_response = String.valueOf(new String(response, "UTF-8"));
                     Log.e(TAG, server_response);
-                    if (server_response.equals("0")) {
-                        result = true;
-                    }
+                    new AlertDialogWrapper.Builder(context)
+                            .setTitle("Gửi thành công")
+                            .setMessage("Đơn thuốc đang được xử lý. Vui lòng chờ đợi kết quả trong ít phút.")
+                            .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    //  back to first activity
+                                    Intent i = new Intent(context.getApplicationContext(), MainActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(i);
+                                }
+                            }).show();
                 } catch (UnsupportedEncodingException e1) {
                     Log.e(TAG, e1.getMessage());
-                    result = false;
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-                result = false;
             }
         });
-
-        return result;
+        return true;
     }
 
     private Bitmap onSelectFromGalleryResult(Context context, Intent data) {
-
         Uri filePath = data.getData();
         Bitmap bitmap = null;
         try {
@@ -110,7 +115,6 @@ public class ImagePre extends Prescription {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return bitmap;
     }
 

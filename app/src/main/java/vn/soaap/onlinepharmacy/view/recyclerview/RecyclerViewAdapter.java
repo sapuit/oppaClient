@@ -1,4 +1,4 @@
-package vn.soaap.onlinepharmacy.recyclerview;
+package vn.soaap.onlinepharmacy.view.recyclerview;
 
 /*
  *  Licensed under the Apache License, Version 2.0 (the "License");

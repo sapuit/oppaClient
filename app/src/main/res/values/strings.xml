@@ -12,4 +12,13 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Cài đặt</string>
+
+    <string name="key_name">name</string>
+    <string name="key_drugs">drugs</string>
+    <string name="key_address">addr</string>
+    <string name="key_phone">phone</string>
+    <string name="key_token">token</string>
+    <string name="key_image">image</string>
+
+
 </resources>

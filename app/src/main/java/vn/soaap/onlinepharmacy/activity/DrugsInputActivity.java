@@ -28,14 +28,14 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.soaap.onlinepharmacy.R;
-import vn.soaap.onlinepharmacy.adapter.PrescriptionAdapter;
+import vn.soaap.onlinepharmacy.view.adapter.PrescriptionAdapter;
 import vn.soaap.onlinepharmacy.app.MyApplication;
 import vn.soaap.onlinepharmacy.entities.Drug;
 import vn.soaap.onlinepharmacy.entities.ImagePre;
 import vn.soaap.onlinepharmacy.entities.ListDrugPre;
 import vn.soaap.onlinepharmacy.entities.User;
-import vn.soaap.onlinepharmacy.recyclerview.ItemTouchListenerAdapter;
-import vn.soaap.onlinepharmacy.recyclerview.SwipeToDismissTouchListener;
+import vn.soaap.onlinepharmacy.view.recyclerview.ItemTouchListenerAdapter;
+import vn.soaap.onlinepharmacy.view.recyclerview.SwipeToDismissTouchListener;
 import vn.soaap.onlinepharmacy.helper.NetworkHelper;
 
 public class DrugsInputActivity extends AppCompatActivity
@@ -55,22 +55,20 @@ public class DrugsInputActivity extends AppCompatActivity
     EditText etDrugQuantity;
     SwipeToDismissTouchListener swipeToDismissTouchListener;
     private View positiveAction;
-    @Bind(R.id.user_name)
-    TextView user_name;
-    @Bind(R.id.user_addr)
-    TextView user_addr;
-    @Bind(R.id.user_phone_num)
-    TextView user_phone_num;
-    @Bind(R.id.btn_add_drug)
-    Button btnAddDrug;
-    @Bind(R.id.ivImage)
-    ImageView ivImage;
-    @Bind(R.id.rvPrescription)
-    RecyclerView recyclerView;
-    @Bind(R.id.fab)
-    FloatingActionButton fab;
-    @Bind(R.id.btn_edit_info)
-    Button btnEditInfo;
+
+    @Bind(R.id.user_name) TextView user_name;
+
+    @Bind(R.id.user_addr) TextView user_addr;
+
+    @Bind(R.id.user_phone_num) TextView user_phone_num;
+
+    @Bind(R.id.btn_add_drug) Button btnAddDrug;
+
+    @Bind(R.id.ivImage) ImageView ivImage;
+
+    @Bind(R.id.rvPrescription) RecyclerView recyclerView;
+
+    @Bind(R.id.fab) FloatingActionButton fab;
 
     private ProgressDialog statusDialog;
 //    private PullScrollView mScrollView;
@@ -337,7 +335,6 @@ public class DrugsInputActivity extends AppCompatActivity
     }
 
     private final int EDIT_INFO = 2;
-
     @OnClick(R.id.btn_edit_info)
     public void editInfo() {
         Intent intent = new Intent(this, InfoInputActivity.class);

@@ -1,4 +1,4 @@
-package vn.soaap.onlinepharmacy.widget;
+package vn.soaap.onlinepharmacy.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;

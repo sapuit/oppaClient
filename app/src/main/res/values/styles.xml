@@ -20,4 +20,15 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+
+    <style name="NavigationDrawerStyle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:typeface">serif</item>
+    </style>
+
+    <style name="ButtomStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:typeface">serif</item>
+    </style>
+
 </resources>
