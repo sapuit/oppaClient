@@ -1,38 +1,12 @@
 {
   "project_info": {
-    "project_number": "300219793797",
-    "project_id": "gmc-chat-1291"
+    "project_number": "952412137905",
+    "project_id": "oppa-1343"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:300219793797:android:317b1b91a1dccc1c",
-        "android_client_info": {
-          "package_name": "vn.soaap.gmcchat"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDVGGtAaSskNcLuBLoBNIMHIpT7Ibzc0G4"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 1
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:300219793797:android:9b47d6c4597aaab3",
+        "mobilesdk_app_id": "1:952412137905:android:9b47d6c4597aaab3",
         "android_client_info": {
           "package_name": "vn.soaap.onlinepharmacy"
         }
@@ -40,7 +14,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDVGGtAaSskNcLuBLoBNIMHIpT7Ibzc0G4"
+          "current_key": "AIzaSyAlY60ySzEtMNGcTMnEE8pgGYHJ7P6b6Qg"
         }
       ],
       "services": {
