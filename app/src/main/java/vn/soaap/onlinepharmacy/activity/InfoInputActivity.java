@@ -17,6 +17,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -40,7 +41,6 @@ import butterknife.OnClick;
 import vn.soaap.onlinepharmacy.R;
 import vn.soaap.onlinepharmacy.app.Config;
 import vn.soaap.onlinepharmacy.app.MyApplication;
-import vn.soaap.onlinepharmacy.entities.ImagePre;
 import vn.soaap.onlinepharmacy.entities.User;
 import vn.soaap.onlinepharmacy.gcm.GcmIntentService;
 import vn.soaap.onlinepharmacy.helper.ImageHelper;
@@ -68,8 +68,6 @@ public class InfoInputActivity extends AppCompatActivity {
 
     private User user;
 
-    private String token;
-
     private File imageFile;
 
     //  View
@@ -88,6 +86,16 @@ public class InfoInputActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //  ẩn status bar
+        if (Build.VERSION.SDK_INT < 16) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }else {
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
+
         setContentView(R.layout.activity_info_input);
         ButterKnife.bind(this);
 
@@ -99,7 +107,6 @@ public class InfoInputActivity extends AppCompatActivity {
         imageFile = getCameraFile();
         action = getIntent().getIntExtra("action", 0);
         user = MyApplication.getInstance().getPrefManager().getUser();
-        token = getIntent().getStringExtra("token");
 
         switch (action) {
             case INPUT_HAND:
@@ -208,7 +215,6 @@ public class InfoInputActivity extends AppCompatActivity {
             }
 
             final Intent intent = new Intent(this, DrugsInputActivity.class);
-            intent.putExtra("token", token);
             intent.putExtra("action", action);
             if (action == INPUT_IMAGE)
                 intent.putExtra("image", image);

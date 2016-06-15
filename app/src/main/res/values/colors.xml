@@ -21,4 +21,7 @@
     <color name="transparent">#00000000</color>
     <color name="button">#dd4b39</color>
 
+    <!--cardview-->
+    <color name="colorControlHighlight">@color/fifty_percent_transparency_grey_400</color>
+    <color name="fifty_percent_transparency_grey_400">#80bdbdbd</color>
 </resources>

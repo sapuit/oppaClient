@@ -1,26 +1,21 @@
 package vn.soaap.onlinepharmacy.activity;
 
-import android.app.ProgressDialog;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
+import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,63 +23,52 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import vn.soaap.onlinepharmacy.R;
-import vn.soaap.onlinepharmacy.view.adapter.PrescriptionAdapter;
 import vn.soaap.onlinepharmacy.app.MyApplication;
 import vn.soaap.onlinepharmacy.entities.Drug;
 import vn.soaap.onlinepharmacy.entities.ImagePre;
 import vn.soaap.onlinepharmacy.entities.ListDrugPre;
 import vn.soaap.onlinepharmacy.entities.User;
-import vn.soaap.onlinepharmacy.view.recyclerview.ItemTouchListenerAdapter;
-import vn.soaap.onlinepharmacy.view.recyclerview.SwipeToDismissTouchListener;
+import vn.soaap.onlinepharmacy.view.Listener.DrugClickListener;
+import vn.soaap.onlinepharmacy.view.adapter.PrescriptionAdapter;
 import vn.soaap.onlinepharmacy.helper.NetworkHelper;
 
-public class DrugsInputActivity extends AppCompatActivity
-        implements ItemTouchListenerAdapter.RecyclerViewOnItemClickListener {
-
+public class DrugsInputActivity extends AppCompatActivity implements DrugClickListener {
     private static int INPUT_IMAGE = 1;
+
+    private final int EDIT_INFO = 2;
+
     private static final String TAG = DrugsInputActivity.class.getSimpleName();
+
     private User user;
+
     private int action;
-    private String token;
-    private PrescriptionAdapter adapter;
+
     private ImagePre imagePre;
+
     private List<Drug> drugs = new ArrayList<Drug>();
+
+    private PrescriptionAdapter adapter;
 
     //    View
     EditText etDrugName;
+
     EditText etDrugQuantity;
-    SwipeToDismissTouchListener swipeToDismissTouchListener;
+
     private View positiveAction;
-
-    @Bind(R.id.user_name) TextView user_name;
-
-    @Bind(R.id.user_addr) TextView user_addr;
-
-    @Bind(R.id.user_phone_num) TextView user_phone_num;
-
-    @Bind(R.id.btn_add_drug) Button btnAddDrug;
-
-    @Bind(R.id.ivImage) ImageView ivImage;
 
     @Bind(R.id.rvPrescription) RecyclerView recyclerView;
 
-    @Bind(R.id.fab) FloatingActionButton fab;
-
-    private ProgressDialog statusDialog;
-//    private PullScrollView mScrollView;
-//    private ImageView mHeadImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_drugs_input);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        hideStatusBar();
         setContentView(R.layout.activity_drugs_input);
         ButterKnife.bind(this);
-        getInfo();
 
+        drugs.add(new Drug(0,"info"));
+
+        getInfo();
         initView();
     }
 
@@ -93,8 +77,6 @@ public class DrugsInputActivity extends AppCompatActivity
         super.onResume();
 
         user = MyApplication.getInstance().getPrefManager().getUser();
-        if (token != null)
-            user.setToken(token);
         if (action == INPUT_IMAGE) {
             imagePre.setUser(user);
         }
@@ -105,96 +87,27 @@ public class DrugsInputActivity extends AppCompatActivity
     private void getInfo() {
 
         action = getIntent().getIntExtra("action", 0);
-        token = getIntent().getStringExtra("token");
-        user = MyApplication.getInstance().getPrefManager().getUser();
-        user.setToken(token);
-
         if (action == INPUT_IMAGE) {
             Bitmap bitmap = getIntent().getParcelableExtra("image");
             imagePre = new ImagePre(user);
-
             imagePre.setImage(bitmap);
         }
     }
 
     private void initView() {
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-//        recyclerView = (RecyclerView) findViewById(R.id.rvPrescription);
-        user_name.setText(user.getName());
-        user_phone_num.setText(user.getPhone());
-        user_addr.setText(user.getAddress());
-
-        if (action == INPUT_IMAGE) {
-            ivImage.setImageBitmap(imagePre.getImage());
-            ivImage.setVisibility(View.VISIBLE);
-            btnAddDrug.setVisibility(View.INVISIBLE);
-
-        } else {
-//            btnAddDrug.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    AddDrug();
-//                }
-//            });
-            recyclerView.setVisibility(View.VISIBLE);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.setHasFixedSize(true);
-
-            adapter = new PrescriptionAdapter(drugs);
-            recyclerView.setAdapter(adapter);
-
-            recyclerView.addOnItemTouchListener(
-                    new ItemTouchListenerAdapter(recyclerView, this));
-
-            swipeToDismissTouchListener = new SwipeToDismissTouchListener(
-                    recyclerView,
-                    new SwipeToDismissTouchListener.DismissCallbacks() {
-
-                        @Override
-                        public SwipeToDismissTouchListener.SwipeDirection canDismiss(int position) {
-                            return SwipeToDismissTouchListener.SwipeDirection.RIGHT;
-                        }
-
-                        @Override
-                        public void onDismiss(RecyclerView view, List<SwipeToDismissTouchListener.PendingDismissData> dismissData) {
-                            for (SwipeToDismissTouchListener.PendingDismissData data : dismissData) {
-                                adapter.removeItem(data.position);
-                            }
-                        }
-                    });
-
-            recyclerView.addOnItemTouchListener(swipeToDismissTouchListener);
-        }
-
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+        if (action == INPUT_IMAGE)
+            adapter = new PrescriptionAdapter(getApplicationContext(), true, imagePre.getImage());
+        else
+            adapter = new PrescriptionAdapter(getApplicationContext(), drugs, this);
+        recyclerView.setAdapter(adapter);
     }
 
-    @OnClick(R.id.fab)
-    public void sendPrescription() {
-        if (!NetworkHelper.isNetworkConnected(getApplicationContext()))
-            return;
-
-        try {
-            if (action == INPUT_IMAGE)
-                imagePre.send(this);
-            else {  //  input presciption is list of drug
-                if (drugs != null && drugs.size() != 0) {
-                    ListDrugPre drugPre = new ListDrugPre(user, drugs);
-                    drugPre.send(this);
-                } else
-                    Toast.makeText(this,
-                            "Vui lòng thêm thuốc vào toa của bạn ! ",
-                            Toast.LENGTH_LONG).show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @OnClick(R.id.btn_add_drug)
-    public void AddDrug() {
+    public void showDialogAddDrug(View v) {
         //  show dialog input drug
         MaterialDialog dialog = new MaterialDialog.Builder(this)
                 .title("Thêm thuốc mới")
@@ -208,6 +121,7 @@ public class DrugsInputActivity extends AppCompatActivity
                     }
                 }).build();
 
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
         etDrugName = (EditText)
                 dialog.getCustomView().findViewById(R.id.etDrugName);
@@ -247,7 +161,24 @@ public class DrugsInputActivity extends AppCompatActivity
         positiveAction.setEnabled(false);
     }
 
-    private void editDrug(final int pos) {
+    public void editInfo(View v) {
+        Intent intent = new Intent(this, InfoInputActivity.class);
+        intent.putExtra("action", EDIT_INFO);
+        startActivity(intent);
+    }
+
+    public void addDrug() {
+        String drugName = etDrugName.getText().toString().trim();
+        Drug drug = new Drug(drugs.size(), drugName);
+        drug.setQuatity(Integer.parseInt(etDrugQuantity.getText().toString()));
+        drugs.add(drug);
+        adapter.notifyDataSetChanged();
+        showToast("Thêm thuốc thành công");
+    }
+
+    @Override
+    public void OnEditClick(View aView, int position) {
+        final int pos = position;
 
         final Drug drug = drugs.get(pos);
 
@@ -270,7 +201,6 @@ public class DrugsInputActivity extends AppCompatActivity
                 }).build();
 
         positiveAction = dialog.getActionButton(DialogAction.POSITIVE);
-        //noinspection ConstantConditions
         etDrugName = (EditText)
                 dialog.getCustomView().findViewById(R.id.etDrugName);
         etDrugQuantity = (EditText)
@@ -290,7 +220,6 @@ public class DrugsInputActivity extends AppCompatActivity
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 etDrugQuantity.setEnabled(s.toString().trim().length() > 0);
                 positiveAction.setEnabled(s.toString().trim().length() > 0);
-
             }
 
             @Override
@@ -300,8 +229,7 @@ public class DrugsInputActivity extends AppCompatActivity
 
         etDrugQuantity.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -309,36 +237,70 @@ public class DrugsInputActivity extends AppCompatActivity
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) {}
         });
 
         dialog.show();
+
         positiveAction.setEnabled(false);
     }
 
-    private void addDrug() {
-        String drugName = etDrugName.getText().toString().trim();
-        Drug drug = new Drug(drugs.size(), drugName);
-        drug.setQuatity(Integer.parseInt(etDrugQuantity.getText().toString()));
-        drugs.add(drug);
-        adapter.notifyDataSetChanged();
-    }
-
     @Override
-    public void onItemClick(RecyclerView parent, View clickedView, int position) {
-        editDrug(position);
+    public void OnDeleteClick(View aView, int position) {
+        final int pos = position;
+
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title("Bạn có muốn xóa thuốc khỏi toa ?")
+                .positiveText(R.string.xoa)
+                .negativeText(R.string.huy)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        drugs.remove(pos);
+                        adapter.notifyDataSetChanged();
+                    }
+                }).build();
+        dialog.show();
     }
 
-    @Override
-    public void onItemLongClick(RecyclerView parent, View clickedView, int position) {
+    @OnClick(R.id.fab)
+    public void sendPrescription() {
+        if (!NetworkHelper.isNetworkConnected(getApplicationContext()))
+            return;
+
+        try {
+            if (action == INPUT_IMAGE)
+                imagePre.send(this);
+            else {  //  input presciption is list of drug
+                if (drugs != null && drugs.size() > 1) {
+                    drugs.remove(0);
+                    ListDrugPre drugPre = new ListDrugPre(user, drugs);
+                    drugPre.send(this);
+                } else
+                    Toast.makeText(this,
+                            "Vui lòng thêm thuốc vào toa của bạn ! ",
+                            Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private final int EDIT_INFO = 2;
-    @OnClick(R.id.btn_edit_info)
-    public void editInfo() {
-        Intent intent = new Intent(this, InfoInputActivity.class);
-        intent.putExtra("action", EDIT_INFO);
-        startActivity(intent);
+    /*  Util    */
+
+    //  ẩn status bar
+    private void hideStatusBar() {
+        if (Build.VERSION.SDK_INT < 16) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } else {
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
+    }
+
+    private void showToast(String message){
+        Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
     }
 }

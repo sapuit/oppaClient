@@ -10,7 +10,6 @@ public class User implements Serializable {
     String name;
     String phone;
     String address;
-    String token;
 
     public User() {
     }
@@ -21,12 +20,6 @@ public class User implements Serializable {
         this.address = address;
     }
 
-    public User(String name, String phone, String address, String token) {
-        this.name = name;
-        this.phone = phone;
-        this.address = address;
-        this.token = token;
-    }
 
     public String getName() {
         return name;
@@ -52,11 +45,4 @@ public class User implements Serializable {
         this.address = address;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 }

@@ -14,7 +14,7 @@ import vn.soaap.onlinepharmacy.activity.MainActivity;
 import vn.soaap.onlinepharmacy.app.Config;
 
 /**
- * Nhận tất cả các response từ server
+ *
  * method will be triggered whenever device receives new push notification
  */
 public class MyGcmPushReceiver extends GcmListenerService {
@@ -25,14 +25,15 @@ public class MyGcmPushReceiver extends GcmListenerService {
 
     @Override
     public void onMessageReceived(String from, Bundle bundle) {
-        String title = bundle.getString("title");
-        String message = bundle.getString("message");
-//        String image = bundle.getString("image");
-        int flag = Integer.parseInt(bundle.getString("flag"));
-        String timestamp = bundle.getString("created_at");
-        Log.e(TAG, "bundle: " + bundle.toString());
-
-        processResend(flag,title,message,timestamp);
+        try {
+            String title     = bundle.getString("title");
+            String message   = bundle.getString("message");
+            String timestamp = bundle.getString("created_at");
+            int flag = Integer.parseInt(bundle.getString("flag"));
+            processResend(flag, title, message, timestamp);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void processResend(int flag,String title, String message, String timestamp) {

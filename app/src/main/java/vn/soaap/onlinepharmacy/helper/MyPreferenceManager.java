@@ -31,6 +31,7 @@ public class MyPreferenceManager {
     private static final String KEY_USER_NAME = "user_name";
     private static final String KEY_USER_ADDR = "user_address";
     private static final String KEY_USER_PHONE = "user_phone";
+    private static final String KEY_USER_TOKEN = "user_token";
     private static final String KEY_NOTIFICATIONS = "notifications";
 
     //  Contructor
@@ -59,27 +60,34 @@ public class MyPreferenceManager {
     }
 
     public void storeUser(User user) {
-//        editor.putString(KEY_USER_ID, user.getId());
         editor.putString(KEY_USER_NAME, user.getName());
         editor.putString(KEY_USER_PHONE, user.getPhone());
         editor.putString(KEY_USER_ADDR, user.getAddress());
         editor.commit();
-
-        Log.e(TAG, "User is stored in shared preferences. " +
-                user.getName() + ", " + user.getPhone() + ", " + user.getAddress());
     }
 
     public User getUser() {
         if (pref.getString(KEY_USER_PHONE, null) != null) {
-            String name, phone, addr, token;
+            String name, phone, addr;
             name = pref.getString(KEY_USER_NAME, null);
             phone = pref.getString(KEY_USER_PHONE, null);
             addr = pref.getString(KEY_USER_ADDR, null);
+
             User user = new User(name, phone, addr);
             return user;
         }
         return null;
     }
+
+    public void storeToken(String token) {
+        editor.putString(KEY_USER_TOKEN, token);
+        editor.commit();
+    }
+
+    public String getToken() {
+        return pref.getString(KEY_USER_TOKEN, null);
+    }
+
 
     public void clear() {
         editor.clear();

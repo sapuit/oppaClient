@@ -27,6 +27,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 import vn.soaap.onlinepharmacy.R;
 import vn.soaap.onlinepharmacy.activity.MainActivity;
 import vn.soaap.onlinepharmacy.app.Config;
+import vn.soaap.onlinepharmacy.app.MyApplication;
 import vn.soaap.onlinepharmacy.util.download.RequestHandler;
 import vn.soaap.onlinepharmacy.util.download.RequestListener;
 
@@ -63,13 +64,18 @@ public class ImagePre extends Prescription {
     @Override
     public boolean send(final Activity context) {
 
+        user = MyApplication.getInstance().getPrefManager().getUser();
+        if (user == null)
+            return false;
+
         JSONObject params = new JSONObject();
         try {
             String image = getStringImage(getImage());
-            params.put(context.getString(R.string.key_name), user.getName());
+            params.put(context.getString(R.string.key_name),  user.getName());
             params.put(context.getString(R.string.key_phone), user.getPhone());
-            params.put(context.getString(R.string.key_address), user.getAddress());
-            params.put(context.getString(R.string.key_token), user.getToken());
+            params.put(context.getString(R.string.key_address),  user.getAddress());
+            params.put(context.getString(R.string.key_token),
+                    MyApplication.getInstance().getPrefManager().getToken());
             params.put(context.getString(R.string.key_image), image);
         } catch (Exception e) {
             e.printStackTrace();

@@ -25,7 +25,6 @@ public class MainFragment extends Fragment {
 
     private void addView(View rootView) {
 
-
     }
 
 

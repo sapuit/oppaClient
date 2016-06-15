@@ -4,7 +4,8 @@
     <string name="title_activity_hand_input">Nhập thông tin cá nhân</string>
     <string name="them">Thêm</string>
     <string name="huy">Hủy</string>
-    <string name="title_activity_drugs_input">Nhập đơn thuốc</string>
+    <string name="xoa">Xóa</string>
+    <string name="title_activity_drugs_input">Toa Thuốc</string>
     <string name="title_activity_image_input">Chụp hình đơn thuốc</string>
     <string name="suadoi">Sửa đổi</string>
     <string name="please_wait">Vui lòng chờ đợi ...</string>

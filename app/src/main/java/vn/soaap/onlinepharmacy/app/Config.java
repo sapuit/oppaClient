@@ -5,7 +5,8 @@ package vn.soaap.onlinepharmacy.app;
  */
 public class Config {
 
-    public static final String IP = "192.168.19.1";
+//    public static final String IP = "ktvonline.vn/oppaServer";
+    public static final String IP = "192.168.19.1/www/oppaServer";
     public static final String URL_UPLOAD       = "http://" + IP + "/prescription/post-image";
     public static final String UPLOAD_LIST_URL  = "http://" + IP + "/prescription/post-drugs";
     public static final String URL_CONFORM      = "http://" + IP + "/prescription/conform";

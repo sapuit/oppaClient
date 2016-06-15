@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,15 +68,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private String token;
 
-    @Bind(R.id.drawer_layout) DrawerLayout drawer;
+    @Bind(R.id.drawer_layout)
+    DrawerLayout drawer;
 
-    @Bind(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
 
-    @Bind(R.id.nav_view) NavigationView nav;
+    @Bind(R.id.nav_view)
+    NavigationView nav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //  ẩn status bar
+        if (Build.VERSION.SDK_INT < 16) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } else {
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
@@ -108,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             addNavigation(user);
         } else {
             nav.setVisibility(View.GONE);
-
         }
     }
 
@@ -132,21 +147,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void addEvent() {
         getToken();
     }
-
-
+    
     public void onClick(View v) {
         //  check connect
         if (!NetworkHelper.isNetworkConnected(getApplicationContext()))
             return;
-
         if (token == null) {
             showNotice("Not get token !");
             return;
         }
-
         final Intent intent = new Intent(this, InfoInputActivity.class);
-        intent.putExtra("token", token);
-
         switch (v.getId()) {
             case R.id.btnHandInput:
                 intent.putExtra("action", INPUT_HAND);
@@ -172,9 +182,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 // checking for type intent filter
                 if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
                     token = intent.getStringExtra("token");
+                    MyApplication.getInstance().getPrefManager().storeToken(token);
                     Log.i(TAG, "GCM registration token : " + token);
 
-//                    Toast.makeText(getApplicationContext(), "GCM registration token: " + token, Toast.LENGTH_LONG).show();
                 } else if (intent.getAction().equals(Config.SENT_TOKEN_TO_SERVER)) {
                     // gcm registration id is stored in our server's MySQL
 //                    Toast.makeText(getApplicationContext(), "GCM registration token is stored in server!", Toast.LENGTH_LONG).show();
@@ -234,21 +244,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             builder.content("Xử lý toa thuốc hoàn tất. Vui lòng xác nhận lại để nhận thuốc tại quầy.");
             final String finalId = id;
             builder.positiveText("Xác nhận")
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        sendRequest("1", finalId, token);
-                    }
-                })
-                .negativeText("Hủy bỏ")
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        sendRequest("0", finalId, token);
-                    }
-                });
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            dialog.dismiss();
+                            sendRequest("1", finalId, token);
+                        }
+                    })
+                    .negativeText("Hủy bỏ")
+                    .onNegative(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            dialog.dismiss();
+                            sendRequest("0", finalId, token);
+                        }
+                    });
         } else {
             builder.content(message)
                     .positiveText("Đóng");
@@ -264,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             jsonObject.put("flag", flag);
             jsonObject.put("id", finalId);
             jsonObject.put("token", token);
-            Log.i(TAG,jsonObject.toString());
+            Log.i(TAG, jsonObject.toString());
 
             RequestHandler handler = RequestHandler.getInstance();
             handler.make_post_Request(MainActivity.this, jsonObject,
@@ -290,7 +300,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
 
                         @Override
-                        public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {}
+                        public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+                        }
                     });
         } catch (Exception e) {
             e.printStackTrace();

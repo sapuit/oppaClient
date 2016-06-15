@@ -44,7 +44,6 @@ public class ListDrugPre extends Prescription {
             return false;
 
         JSONObject params = new JSONObject();
-        StringEntity entity = null;
         try {
 
             JSONArray jsonArray = new JSONArray();
@@ -59,8 +58,8 @@ public class ListDrugPre extends Prescription {
             params.put(context.getString(R.string.key_name), user.getName());
             params.put(context.getString(R.string.key_phone), user.getPhone());
             params.put(context.getString(R.string.key_address), user.getAddress());
-            params.put(context.getString(R.string.key_token), user.getToken());
-            //  params.put(Config.KEY_EMAIL, "example@gmail.com");
+            params.put(context.getString(R.string.key_token),
+                    MyApplication.getInstance().getPrefManager().getToken());
 
             Log.i("request content", params.toString());
         } catch (Exception e) {

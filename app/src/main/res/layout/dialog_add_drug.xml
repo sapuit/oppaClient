@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/etDrugName"
         android:layout_width="match_parent"
@@ -14,8 +13,7 @@
         android:singleLine="true"
         android:textSize="15sp"
         app:met_floatingLabel="highlight"
-        app:met_maxCharacters="30"
-        app:met_minCharacters="2" />
+         />
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/etQuantity"

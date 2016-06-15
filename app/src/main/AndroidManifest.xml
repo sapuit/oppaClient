@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="vn.soaap.onlinepharmacy">
+        package="vn.soaap.onlinepharmacy">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -8,20 +8,22 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!-- needed for older devices -
-     used to check app background / foreground status -->
+    <!--
+     needed for older devices -
+     used to check app background / foreground status
+    -->
     <uses-permission android:name="android.permission.GET_TASKS" />
 
     <!-- START Added for GCM -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <permission
         android:name="vn.soaap.onlinepharmacy.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
     <uses-permission android:name="vn.soaap.onlinepharmacy.permission.C2D_MESSAGE" />
+
     <!-- END Added for GCM -->
-
-
     <application xmlns:tools="http://schemas.android.com/tools"
         android:name=".app.MyApplication"
         android:allowBackup="true"
@@ -59,7 +61,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="vn.soaap.onlinepharmacy.activity.InfoInputActivity" />
         </activity>
-
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity" />
 
         <!-- START Added for GCM -->
