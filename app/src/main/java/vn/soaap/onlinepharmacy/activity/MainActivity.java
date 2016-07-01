@@ -6,9 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
@@ -21,7 +19,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,31 +31,32 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.entity.StringEntity;
-import cz.msebera.android.httpclient.message.BasicHeader;
-import cz.msebera.android.httpclient.protocol.HTTP;
 import vn.soaap.onlinepharmacy.R;
 import vn.soaap.onlinepharmacy.app.Config;
 import vn.soaap.onlinepharmacy.app.MyApplication;
+import vn.soaap.onlinepharmacy.entities.Message;
 import vn.soaap.onlinepharmacy.entities.User;
+import vn.soaap.onlinepharmacy.util.FolderHelper;
 import vn.soaap.onlinepharmacy.util.download.RequestHandler;
 import vn.soaap.onlinepharmacy.util.download.RequestListener;
 import vn.soaap.onlinepharmacy.gcm.GcmIntentService;
-import vn.soaap.onlinepharmacy.helper.NetworkHelper;
 import vn.soaap.onlinepharmacy.view.fragments.MainFragment;
 import vn.soaap.onlinepharmacy.view.fragments.PrescriptionFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-
-    private final int INPUT_HAND = 0;
-
-    private final int INPUT_IMAGE = 1;
+    private static final String MAIN_FRAGMENT = "main_fragment";
 
     private final int EDIT_INFO = 2;
 
@@ -66,31 +64,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
-    private String token;
+    private String mToken;
 
-    @Bind(R.id.drawer_layout)
-    DrawerLayout drawer;
+    @Bind(R.id.drawer_layout) DrawerLayout mDrawer;
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
+    @Bind(R.id.toolbar) Toolbar mToolbar;
 
-    @Bind(R.id.nav_view)
-    NavigationView nav;
+    @Bind(R.id.nav_view) NavigationView mNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //  ẩn status bar
-        if (Build.VERSION.SDK_INT < 16) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        } else {
-            View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-            decorView.setSystemUiVisibility(uiOptions);
-        }
-
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
@@ -99,17 +83,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void addView() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle(R.string.title_activity_main);
 
         FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().replace(R.id.fl_main, new MainFragment()).commit();
+        fm.beginTransaction().replace(R.id.fl_main, new MainFragment(getBaseContext()), MAIN_FRAGMENT).commit();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
+        Log.d(TAG,"onResum");
+
+        String oldNotification = MyApplication.getInstance().getPrefManager().getNotifications();
+
+        if (oldNotification != null) {
+            List<String> messages = Arrays.asList(oldNotification.split("\\|"));
+            for (int i = messages.size() - 1; i >= 0; i--) {
+                Log.d(TAG, messages.get(i));
+            }
+        }
         // register GCM registration complete receiver
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(Config.REGISTRATION_COMPLETE));
@@ -123,21 +117,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (user != null) {
             addNavigation(user);
         } else {
-            nav.setVisibility(View.GONE);
+            mNavigationView.setVisibility(View.GONE);
         }
     }
 
     private void addNavigation(User user) {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+                this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawer.setDrawerListener(toggle);
         toggle.syncState();
-        nav.setNavigationItemSelectedListener(this);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
         //  set data navigation
-        View header = nav.getHeaderView(0);
-        TextView txtName = (TextView) header.findViewById(R.id.txtName);
-        TextView txtPhone = (TextView) header.findViewById(R.id.txtPhone);
+        View header = mNavigationView.getHeaderView(0);
+        TextView txtName    = (TextView) header.findViewById(R.id.txtName);
+        TextView txtPhone   = (TextView) header.findViewById(R.id.txtPhone);
         TextView txtAddress = (TextView) header.findViewById(R.id.txtAddress);
         txtName.setText(user.getName());
         txtPhone.setText(user.getPhone());
@@ -145,55 +139,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void addEvent() {
-        getToken();
-    }
-    
-    public void onClick(View v) {
-        //  check connect
-        if (!NetworkHelper.isNetworkConnected(getApplicationContext()))
-            return;
-        if (token == null) {
-            showNotice("Not get token !");
-            return;
-        }
-        final Intent intent = new Intent(this, InfoInputActivity.class);
-        switch (v.getId()) {
-            case R.id.btnHandInput:
-                intent.putExtra("action", INPUT_HAND);
-                break;
-            case R.id.btnImageInput:
-                intent.putExtra("action", INPUT_IMAGE);
-                break;
-        }
-
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(intent);
-            }
-        }, 400);
+        FolderHelper.makeAppFolderIfNotExist();
+        receiveResponse();
     }
 
-    public void getToken() {
+    public void receiveResponse() {
+
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                // checking for type intent filter
                 if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
-                    token = intent.getStringExtra("token");
-                    MyApplication.getInstance().getPrefManager().storeToken(token);
-                    Log.i(TAG, "GCM registration token : " + token);
+                    mToken = intent.getStringExtra("token");
+                    MyApplication.getInstance().getPrefManager().storeToken(mToken);
+                    Log.i(TAG, "GCM registration token : " + mToken);
 
                 } else if (intent.getAction().equals(Config.SENT_TOKEN_TO_SERVER)) {
                     // gcm registration id is stored in our server's MySQL
-//                    Toast.makeText(getApplicationContext(), "GCM registration token is stored in server!", Toast.LENGTH_LONG).show();
                 } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
-                    // new push notification is received
-                    showNotification(
-                            intent.getIntExtra("flag", 0),
-                            intent.getStringExtra("title"),
-                            intent.getStringExtra("message"));
+                    Log.d(TAG,"PUSH_NOTIFICATION");
+                    handlePushNotification(intent);
+
                 }
             }
         };
@@ -203,14 +168,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    // starting the service to register with GCM
+    /*
+    *   starting the service to register with GCM
+    */
     private void registerGCM() {
         Intent intent = new Intent(this, GcmIntentService.class);
         intent.putExtra("key", "register");
         startService(intent);
     }
 
-    //  Check play service
+    /*
+    *   Check play service
+    */
     private boolean checkPlayServices() {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
@@ -220,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .show();
             } else {
                 Log.i(TAG, "This device is not supported. Google Play Services not installed!");
-                Toast.makeText(getApplicationContext(), "This device is not supported. Google Play Services not installed!", Toast.LENGTH_LONG).show();
+                showNotice("This device is not supported. Google Play Services not installed!");
                 finish();
             }
             return false;
@@ -228,7 +197,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    private void showNotification(final int flag, String title, String message) {
+    private void handlePushNotification(Intent intent) {
+        addPrescriptionFragment();
+
+        final int flag = intent.getIntExtra("flag",0);
+        String title   = intent.getStringExtra("title");
+        String message = intent.getStringExtra("message");
 
         String id = "";
         try {
@@ -239,8 +213,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         MaterialDialog.Builder builder = new MaterialDialog.Builder(this);
         builder.title(title);
-        //  xác nhận lấy toa thuốc
-        if (flag == 2) {
+
+        if (flag == 2) {    //  xác nhận lấy toa thuốc
             builder.content("Xử lý toa thuốc hoàn tất. Vui lòng xác nhận lại để nhận thuốc tại quầy.");
             final String finalId = id;
             builder.positiveText("Xác nhận")
@@ -248,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             dialog.dismiss();
-                            sendRequest("1", finalId, token);
+                            sendRequest("1", finalId, mToken);
                         }
                     })
                     .negativeText("Hủy bỏ")
@@ -256,10 +230,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             dialog.dismiss();
-                            sendRequest("0", finalId, token);
+                            sendRequest("0", finalId, mToken);
                         }
                     });
-        } else {
+
+        } else {    //  hiển thị thông báo khác
             builder.content(message)
                     .positiveText("Đóng");
         }
@@ -273,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("flag", flag);
             jsonObject.put("id", finalId);
-            jsonObject.put("token", token);
+            jsonObject.put("mToken", token);
             Log.i(TAG, jsonObject.toString());
 
             RequestHandler handler = RequestHandler.getInstance();
@@ -316,11 +291,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            mDrawer.closeDrawer(GravityCompat.START);
+            return;
         } else {
             super.onBackPressed();
         }
+
+
     }
 
     @Override
@@ -342,21 +320,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-        FragmentManager fm = getFragmentManager();
 
         switch (id) {
             case R.id.nav_main:
-                fm.beginTransaction().replace(R.id.fl_main, new MainFragment()).commit();
+                addView();
                 break;
-
-            case R.id.nav_handle:
-                break;
-
-            case R.id.nav_receive:
-                break;
+//
+//            case R.id.nav_handle:
+//                break;
+//
+//            case R.id.nav_receive:
+//                break;
 
             case R.id.nav_pre:
-                fm.beginTransaction().replace(R.id.fl_main, new PrescriptionFragment()).commit();
+                addPrescriptionFragment();
                 break;
 
             case R.id.nav_edit:
@@ -372,11 +349,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
 
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    public void showNotice(String s) {
+    private void addPrescriptionFragment() {
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setTitle("Tình trạng đơn thuốc");
+
+        ArrayList<Message> messageArrayList = new ArrayList<>();
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction().replace(R.id.fl_main,
+                new PrescriptionFragment(getApplicationContext(),mNavigationView), "MAIN_FRAGMENT").commit();
+    }
+
+    private void showNotice(String s) {
         Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
     }
 }

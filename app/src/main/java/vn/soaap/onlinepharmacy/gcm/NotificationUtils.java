@@ -18,7 +18,11 @@ import android.os.PatternMatcher;
 import android.support.v7.app.NotificationCompat;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,18 +68,13 @@ public class NotificationUtils {
         final int icon = R.mipmap.ic_launcher;
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         final PendingIntent resultPendingIntent =
-                PendingIntent.getActivity(
-                        context,
-                        0,
-                        intent,
-                        PendingIntent.FLAG_CANCEL_CURRENT);
-
+                PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         final Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
                 + "://" + context.getPackageName() + "/raw/notification");
 
-        if (!TextUtils.isEmpty(imageUrl)){
-            if (imageUrl != null && imageUrl.length() > 4 && Patterns.WEB_URL.matcher(imageUrl).matches()){
+        if (!TextUtils.isEmpty(imageUrl)) {
+            if (imageUrl != null && imageUrl.length() > 4 && Patterns.WEB_URL.matcher(imageUrl).matches()) {
                 Bitmap bitmap = getBitmapFromURL(imageUrl);
                 if (bitmap != null) {
                     showBigNotification(bitmap, mBuilder, icon, title, message, timeStamp, resultPendingIntent, alarmSound);
@@ -83,7 +82,7 @@ public class NotificationUtils {
                     showSmallNotification(mBuilder, icon, title, message, timeStamp, resultPendingIntent, alarmSound);
                 }
             }
-        }else {
+        } else {
             showSmallNotification(mBuilder, icon, title, message, timeStamp, resultPendingIntent, alarmSound);
             playNotificationSound();
         }
@@ -93,22 +92,25 @@ public class NotificationUtils {
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
-        if (Config.appendNotificationMessages) {
-            // store the notification in shared pref first
-            MyApplication.getInstance().getPrefManager().addNotification(message);
-
-            // get the notifications from shared preferences
-            String oldNotification = MyApplication.getInstance().getPrefManager().getNotifications();
-
-            List<String> messages = Arrays.asList(oldNotification.split("\\|"));
-
-            for (int i = messages.size() - 1; i >= 0; i--) {
-                inboxStyle.addLine(messages.get(i));
-            }
-        } else {
+//        if (Config.appendNotificationMessages) {
+//
+//            // get the notifications from shared preferences
+//            String oldNotification = MyApplication.getInstance().getPrefManager().getNotifications();
+//
+//            List<String> messages = Arrays.asList(oldNotification.split("\\|"));
+//            String s = messages.get(messages.size() - 1);
+//            Log.d(TAG,s);
+//            try {
+//                JSONObject json = new JSONObject(s);
+//
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//
+//            inboxStyle.addLine();
+//        } else {
             inboxStyle.addLine(message);
-        }
-
+//        }
 
         Notification notification;
         notification = mBuilder.setSmallIcon(icon).setTicker(title).setWhen(0)

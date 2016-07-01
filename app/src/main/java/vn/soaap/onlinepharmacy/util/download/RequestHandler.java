@@ -97,52 +97,47 @@ public class RequestHandler {
     }
 
     public void make_post_Request(final Activity context, final JSONObject jsonObject, final String url, final RequestListener listener) {
-        StringEntity entity =  new StringEntity(jsonObject.toString(), "UTF-8");
+        try {
+            StringEntity entity = new StringEntity(jsonObject.toString(), "UTF-8");
+            client.post(context, url, entity, "application/json", new AsyncHttpResponseHandler() {
 
-        client.post(context, url,entity , "application/json", new AsyncHttpResponseHandler() {
+                MaterialDialog dialog;
 
-            MaterialDialog dialog;
-            @Override
-            public void onStart() {
-                Log.v(TAG, "Start");
-                Log.v(TAG, url);
-                 dialog =  new MaterialDialog.Builder(context)
-                        .title(R.string.progress_dialog)
-                        .content(R.string.please_wait)
-                        .progress(true, 0)
-                         .canceledOnTouchOutside(false)
-                        .show();
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-                listener.onSuccess(statusCode, headers, response);
-                Log.v(TAG, "Success");
-                dialog.dismiss();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-                Log.e(" POST FAILED ", context.getClass().getSimpleName() + " -> " + e.getLocalizedMessage());
-                if (DUtils.isDebuggable(context) && SHOW_DEBUG_ALERT_DIALOG) {
-                    dialog.dismiss();
-                    new AlertDialogWrapper.Builder(context)
-                            .setTitle("Gửi không thành công")
-                            .setMessage("Vui lòng kiểm tra lại kết nối hoặc liên hệ trực tiếp với nhà thuốc.")
-                            .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            }).show();
+                @Override
+                public void onStart() {
+                    Log.v(TAG, "Start");
+                    Log.v(TAG, url);
+                    dialog = new MaterialDialog.Builder(context)
+                            .title(R.string.progress_dialog)
+                            .content(R.string.please_wait)
+                            .progress(true, 0)
+                            .canceledOnTouchOutside(false)
+                            .show();
                 }
-            }
 
-            @Override
-            public void onRetry(int retryNo) {
-                Log.e("RETRYING ", "....." + String.valueOf(retryNo));
-            }
-        });
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] response) {
+                    listener.onSuccess(statusCode, headers, response);
+                    dialog.dismiss();
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+                    listener.onFailure(statusCode, headers, errorResponse,e);
+
+                    if (DUtils.isDebuggable(context) && SHOW_DEBUG_ALERT_DIALOG) {
+                        dialog.dismiss();
+                    }
+                }
+
+                @Override
+                public void onRetry(int retryNo) {
+                    Log.e("RETRYING ", "....." + String.valueOf(retryNo));
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

@@ -44,11 +44,6 @@
                     android:text="Hình ảnh toa thuốc"
                     android:textSize="18sp" />
 
-                <!--<TextView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="Google"-->
-                    <!--android:textSize="14sp" />-->
             </LinearLayout>
 
         </LinearLayout>

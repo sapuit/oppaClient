@@ -6,132 +6,86 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical"
     android:fitsSystemWindows="true"
-
+    tools:showIn="@layout/activity_info_input"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="vn.soaap.onlinepharmacy.activity.InfoInputActivity">
 
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/lnInfo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_above="@+id/lnFooter"
+        android:orientation="vertical"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingTop="20dp">
 
-        <RelativeLayout
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/etName"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:hint="Họ tên "
+            android:inputType="textCapWords"
+            android:singleLine="true"
+            android:textSize="15sp"
+            app:met_clearButton="true"
+            app:met_floatingLabel="highlight" />
 
-            <LinearLayout
-                android:id="@+id/lnHeader"
-                android:layout_width="match_parent"
-                android:layout_height="128dp">
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/etPhoneNum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Số điện thoại"
+            android:inputType="number"
+            android:maxLength="15"
+            android:singleLine="true"
+            android:textSize="15sp"
+            app:met_clearButton="true"
+            app:met_floatingLabel="highlight" />
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/etAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Địa chỉ"
+            android:inputType="textCapWords"
+            android:maxLength="30"
+            android:singleLine="true"
+            android:textSize="15sp"
+            app:met_clearButton="true"
+            app:met_floatingLabel="highlight" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/colorPrimary" />
+    </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tvTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="32dp"
-                        android:paddingRight="32dp"
-                        android:paddingTop="10dp"
-                        android:text="Nhập thông tin cá nhân"
-                        android:textColor="@android:color/white"
-                        android:textSize="25sp" />
+    <RelativeLayout
+        android:id="@+id/lnFooter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
 
-                </RelativeLayout>
-            </LinearLayout>
+        <com.andexert.library.RippleView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            app:rv_centered="true"
+            app:rv_color="@color/colorDivider"
+            app:rv_rippleDuration="300"
+            app:rv_type="rectangle">
 
-            <LinearLayout
-                android:id="@+id/lnInfo"
-                android:layout_below="@+id/lnHeader"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/footer_next"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
-                android:paddingTop="20dp">
-
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/etName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Họ tên "
-                    android:inputType="textCapWords"
-                    android:singleLine="true"
-                    android:textSize="15sp"
-                    app:met_clearButton="true"
-                    app:met_floatingLabel="highlight" />
-
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/etPhoneNum"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Số điện thoại"
-                    android:inputType="number"
-                    android:maxLength="15"
-                    android:singleLine="true"
-                    android:textSize="15sp"
-                    app:met_clearButton="true"
-                    app:met_floatingLabel="highlight" />
-
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/etAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Địa chỉ"
-                    android:inputType="textCapWords"
-                    android:maxLength="30"
-                    android:singleLine="true"
-                    android:textSize="15sp"
-                    app:met_clearButton="true"
-                    app:met_floatingLabel="highlight" />
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:id="@+id/lnFooter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true">
-
-                <com.andexert.library.RippleView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="10dp"
-                    app:rv_centered="true"
-                    app:rv_color="@color/colorDivider"
-                    app:rv_rippleDuration="300"
-                    app:rv_type="rectangle">
-
-                    <Button
-                        android:layout_below="@+id/lnInfo"
-                        android:id="@+id/footer_next"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/button_bg"
-                        android:text="Tiếp theo "
-                        android:textColor="@color/colorPrimary"
-                        app:itemTextAppearance="@style/ButtomStyle" />
-                </com.andexert.library.RippleView>
-            </RelativeLayout>
-        </RelativeLayout>
-
-    </ScrollView>
-
-
-
+                android:layout_below="@+id/lnInfo"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/button_bg"
+                android:text="Tiếp theo "
+                android:textColor="@color/colorPrimary"
+                app:itemTextAppearance="@style/ButtomStyle" />
+        </com.andexert.library.RippleView>
+    </RelativeLayout>
 </RelativeLayout>
+

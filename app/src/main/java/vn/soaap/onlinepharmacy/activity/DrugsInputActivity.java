@@ -2,21 +2,28 @@ package vn.soaap.onlinepharmacy.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
@@ -33,11 +40,11 @@ import vn.soaap.onlinepharmacy.view.adapter.PrescriptionAdapter;
 import vn.soaap.onlinepharmacy.helper.NetworkHelper;
 
 public class DrugsInputActivity extends AppCompatActivity implements DrugClickListener {
-    private static int INPUT_IMAGE = 1;
-
-    private final int EDIT_INFO = 2;
 
     private static final String TAG = DrugsInputActivity.class.getSimpleName();
+    private static int INPUT_IMAGE = 1;
+    private final int EDIT_INFO = 2;
+
 
     private User user;
 
@@ -50,14 +57,12 @@ public class DrugsInputActivity extends AppCompatActivity implements DrugClickLi
     private PrescriptionAdapter adapter;
 
     //    View
-    EditText etDrugName;
-
-    EditText etDrugQuantity;
-
+    private EditText etDrugName;
+    private EditText etDrugQuantity;
     private View positiveAction;
 
-    @Bind(R.id.rvPrescription) RecyclerView recyclerView;
-
+    @Bind(R.id.rvPrescription)
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +71,8 @@ public class DrugsInputActivity extends AppCompatActivity implements DrugClickLi
         setContentView(R.layout.activity_drugs_input);
         ButterKnife.bind(this);
 
-        drugs.add(new Drug(0,"info"));
+        //  add card info
+        drugs.add(new Drug(0, "info"));
 
         getInfo();
         initView();
@@ -77,6 +83,7 @@ public class DrugsInputActivity extends AppCompatActivity implements DrugClickLi
         super.onResume();
 
         user = MyApplication.getInstance().getPrefManager().getUser();
+
         if (action == INPUT_IMAGE) {
             imagePre.setUser(user);
         }
@@ -88,9 +95,9 @@ public class DrugsInputActivity extends AppCompatActivity implements DrugClickLi
 
         action = getIntent().getIntExtra("action", 0);
         if (action == INPUT_IMAGE) {
-            Bitmap bitmap = getIntent().getParcelableExtra("image");
-            imagePre = new ImagePre(user);
-            imagePre.setImage(bitmap);
+            String ima = getIntent().getStringExtra("image");
+            Uri uri = Uri.parse(ima);
+            imagePre = new ImagePre(getApplicationContext(), user, uri);
         }
     }
 
@@ -229,7 +236,8 @@ public class DrugsInputActivity extends AppCompatActivity implements DrugClickLi
 
         etDrugQuantity.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -237,7 +245,8 @@ public class DrugsInputActivity extends AppCompatActivity implements DrugClickLi
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         dialog.show();
@@ -273,7 +282,6 @@ public class DrugsInputActivity extends AppCompatActivity implements DrugClickLi
                 imagePre.send(this);
             else {  //  input presciption is list of drug
                 if (drugs != null && drugs.size() > 1) {
-                    drugs.remove(0);
                     ListDrugPre drugPre = new ListDrugPre(user, drugs);
                     drugPre.send(this);
                 } else
@@ -300,7 +308,7 @@ public class DrugsInputActivity extends AppCompatActivity implements DrugClickLi
         }
     }
 
-    private void showToast(String message){
-        Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
+    private void showToast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

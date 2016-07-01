@@ -5,11 +5,7 @@
         android:id="@+id/menu_top"
         android:checkableBehavior="single">
 
-        <item
-            android:id="@+id/nav_main"
-            android:checked="true"
-            android:icon="@drawable/ic_send"
-            android:title="Gửi toa thuốc" />
+
     </group>
 
     <group
@@ -17,20 +13,26 @@
         android:checkableBehavior="single">
 
         <item
-            android:id="@+id/nav_handle"
-            android:icon="@drawable/ic_action_paste"
-            android:title="Toa thuốc chờ xử lý"
-            />
+            android:id="@+id/nav_main"
+            android:checked="true"
+            android:icon="@drawable/ic_send"
+            android:title="Gửi toa thuốc" />
 
-        <item
-            android:id="@+id/nav_receive"
-            android:icon="@drawable/ic_local_offer"
-            android:title="Toa thuốc chờ giao" />
+        <!--<item-->
+            <!--android:id="@+id/nav_handle"-->
+            <!--android:icon="@drawable/ic_action_paste"-->
+            <!--android:title="Toa thuốc chờ xử lý"-->
+            <!--/>-->
+
+        <!--<item-->
+            <!--android:id="@+id/nav_receive"-->
+            <!--android:icon="@drawable/ic_local_offer"-->
+            <!--android:title="Toa thuốc chờ giao" />-->
 
         <item
             android:id="@+id/nav_pre"
             android:icon="@drawable/ic_description"
-            android:title="Tất cả Toa thuốc" />
+            android:title="Tình trạng Toa thuốc" />
     </group>
 
 

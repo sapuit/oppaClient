@@ -21,6 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
@@ -37,6 +39,7 @@ public class ImagePre extends Prescription {
 
     private Bitmap image;
 
+    Uri uri;
 
     public ImagePre(User user) {
         super(user);
@@ -45,8 +48,9 @@ public class ImagePre extends Prescription {
     public ImagePre(Context context, User user, Uri uri) {
         super(user);
         try {
-            this.image = scaleBitmapDown(MediaStore.Images.Media
-                    .getBitmap(context.getContentResolver(), uri), 300);
+            this.image = MediaStore.Images.Media
+                    .getBitmap(context.getContentResolver(), uri);
+            this.uri = uri;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,7 +64,6 @@ public class ImagePre extends Prescription {
         this.image = image;
     }
 
-
     @Override
     public boolean send(final Activity context) {
 
@@ -71,15 +74,19 @@ public class ImagePre extends Prescription {
         JSONObject params = new JSONObject();
         try {
             String image = getStringImage(getImage());
-            params.put(context.getString(R.string.key_name),  user.getName());
+            params.put(context.getString(R.string.key_name), user.getName());
             params.put(context.getString(R.string.key_phone), user.getPhone());
-            params.put(context.getString(R.string.key_address),  user.getAddress());
+            params.put(context.getString(R.string.key_address), user.getAddress());
             params.put(context.getString(R.string.key_token),
                     MyApplication.getInstance().getPrefManager().getToken());
             params.put(context.getString(R.string.key_image), image);
+
+            saveMessagePref(Config.MESSAGE_USER, Config.PRESCRIPTION_IMAGE, "Toa thuốc", uri.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        Log.i(TAG, params.toString());
 
         RequestHandler handler = RequestHandler.getInstance();
         handler.make_post_Request(context, params, Config.URL_UPLOAD, new RequestListener() {
@@ -87,20 +94,15 @@ public class ImagePre extends Prescription {
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                 try {
                     String server_response = String.valueOf(new String(response, "UTF-8"));
-                    Log.e(TAG, server_response);
-                    new AlertDialogWrapper.Builder(context)
-                            .setTitle("Gửi thành công")
-                            .setMessage("Đơn thuốc đang được xử lý. Vui lòng chờ đợi kết quả trong ít phút.")
-                            .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    //  back to first activity
-                                    Intent i = new Intent(context.getApplicationContext(), MainActivity.class);
-                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    context.startActivity(i);
-                                }
-                            }).show();
+                    Log.i("sendRequest", server_response);
+                    if (server_response.equals("OK")) {
+                        showDialog(context,
+                                context.getResources().getString(R.string.title_send_pre_success),
+                                context.getResources().getString(R.string.message_send_pre_success));
+                        saveMessagePref(Config.MESSAGE_SERVER, 100,
+                                context.getResources().getString(R.string.title_send_pre_success),
+                                context.getResources().getString(R.string.message_send_pre_success));
+                    }
                 } catch (UnsupportedEncodingException e1) {
                     Log.e(TAG, e1.getMessage());
                 }
@@ -108,9 +110,34 @@ public class ImagePre extends Prescription {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
+                Log.d("sendRequest", "Gửi không thành công");
+                saveMessagePref(Config.MESSAGE_SERVER, 101,
+                        context.getResources().getString(R.string.title_send_pre_fail),
+                        context.getResources().getString(R.string.message_send_pre_fail));
+
+                showDialog(context,
+                        context.getResources().getString(R.string.title_send_pre_fail),
+                        context.getResources().getString(R.string.message_send_pre_fail));
+
             }
         });
         return true;
+    }
+
+    private void showDialog(final Context context, String title, String message) {
+        new AlertDialogWrapper.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        //  back to first activity
+                        Intent i = new Intent(context.getApplicationContext(), MainActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        context.startActivity(i);
+                    }
+                }).show();
     }
 
     private Bitmap onSelectFromGalleryResult(Context context, Intent data) {
@@ -155,24 +182,25 @@ public class ImagePre extends Prescription {
         return encodedImage;
     }
 
-    public Bitmap scaleBitmapDown(Bitmap bitmap, int maxDimension) {
 
-        int originalWidth = bitmap.getWidth();
-        int originalHeight = bitmap.getHeight();
-        int resizedWidth = maxDimension;
-        int resizedHeight = maxDimension;
+    private void saveMessagePref(String type, int flag, String title, String message) {
+        try {
 
-        if (originalHeight > originalWidth) {
-            resizedHeight = maxDimension;
-            resizedWidth = (int) (resizedHeight * (float) originalWidth / (float) originalHeight);
-        } else if (originalWidth > originalHeight) {
-            resizedWidth = maxDimension;
-            resizedHeight = (int) (resizedWidth * (float) originalHeight / (float) originalWidth);
-        } else if (originalHeight == originalWidth) {
-            resizedHeight = maxDimension;
-            resizedWidth = maxDimension;
+            SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+            String timestamp = s.format(new Date());
+            Log.d("date", timestamp);
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(Config.MESSAGE_TYPE, type);
+            jsonObject.put(Config.MESSAGE_FLAG, flag);
+            jsonObject.put(Config.MESSAGE_TITLE, title);
+            jsonObject.put(Config.MESSAGE_MESSAGE, message);
+            jsonObject.put(Config.MESSAGE_TIMESTAMP, timestamp);
+
+            MyApplication.getInstance().getPrefManager().addNotification(jsonObject.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return Bitmap.createScaledBitmap(bitmap, resizedWidth, resizedHeight, false);
     }
 
 }

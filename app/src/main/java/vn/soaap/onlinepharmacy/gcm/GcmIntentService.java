@@ -48,9 +48,7 @@ public class GcmIntentService extends IntentService {
                 // if key is not specified, register with GCM
                 registerGCM();
         }
-
     }
-
 
     private void registerGCM() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -66,11 +64,10 @@ public class GcmIntentService extends IntentService {
             // sending the registration id to our server
 //            sendRegistrationToServer(token);
 
-            sharedPreferences.edit().putBoolean(Config.SENT_TOKEN_TO_SERVER, true).apply();
+//            sharedPreferences.edit().putBoolean(Config.SENT_TOKEN_TO_SERVER, true).apply();
         } catch (Exception e) {
             Log.e(TAG, "Failed to complete token refresh", e);
-
-            sharedPreferences.edit().putBoolean(Config.SENT_TOKEN_TO_SERVER, false).apply();
+//            sharedPreferences.edit().putBoolean(Config.SENT_TOKEN_TO_SERVER, false).apply();
         }
 
         // Notify UI that registration has completed, so the progress indicator can be hidden.
@@ -78,7 +75,6 @@ public class GcmIntentService extends IntentService {
         registrationComplete.putExtra("token", token);
         LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
     }
-
 
 
     private void sendRegistrationToServer(final String token) {
@@ -95,7 +91,7 @@ public class GcmIntentService extends IntentService {
 //        InstanceID instanceID = InstanceID.getInstance(getApplicationContext());
 //        String token = null;
 //        try {
-//            token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
+//            token = instanceID.receiveResponse(getString(R.string.gcm_defaultSenderId),
 //                    GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 //            if (token != null) {
 //                pubSub.subscribe(token, "/topics/" + topic, null);
@@ -114,7 +110,7 @@ public class GcmIntentService extends IntentService {
 //        InstanceID instanceID = InstanceID.getInstance(getApplicationContext());
 //        String token = null;
 //        try {
-//            token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
+//            token = instanceID.receiveResponse(getString(R.string.gcm_defaultSenderId),
 //                    GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 //            if (token != null) {
 //                pubSub.unsubscribe(token, "");

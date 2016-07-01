@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -30,6 +31,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -56,52 +58,38 @@ public class InfoInputActivity extends AppCompatActivity {
 
     public static final int CAMERA_PERMISSIONS_REQUEST = 3;
 
-    private final int INPUT_HAND = 0;
-
-    private final int INPUT_IMAGE = 1;
-
     private final int EDIT_INFO = 2;
 
     private int action;
 
-    private Bitmap image;
+//    private Bitmap image;
 
     private User user;
 
     private File imageFile;
 
     //  View
-    @Bind(R.id.tvTitle) TextView tvTitle;
-
+    @Bind(R.id.toolbarInfo) Toolbar toolbarInfo;
     @Bind(R.id.footer_next) Button footer_next;
-
     @Bind(R.id.etAddress) MaterialEditText etAddress;
-
     @Bind(R.id.etPhoneNum) MaterialEditText etPhoneNum;
-
     @Bind(R.id.etName) MaterialEditText etName;
-
     @BindColor(R.color.colorPrimaryDark) int colorPrimaryDark;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //  ẩn status bar
-        if (Build.VERSION.SDK_INT < 16) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }else {
-            View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-            decorView.setSystemUiVisibility(uiOptions);
-        }
-
         setContentView(R.layout.activity_info_input);
         ButterKnife.bind(this);
 
+        addView();
         addEvent();
     }
 
+    private void addView() {
+        setSupportActionBar(toolbarInfo);
+        getSupportActionBar().setTitle(R.string.title_activity_info);
+    }
 
     private void addEvent() {
         imageFile = getCameraFile();
@@ -109,15 +97,15 @@ public class InfoInputActivity extends AppCompatActivity {
         user = MyApplication.getInstance().getPrefManager().getUser();
 
         switch (action) {
-            case INPUT_HAND:
+            case Config.PRESCRIPTION_LIST:
                 init();
                 break;
-            case INPUT_IMAGE:
+            case Config.PRESCRIPTION_IMAGE:
                 startCamera();
                 break;
             case EDIT_INFO:
                 footer_next.setText("Hoàn Tất");
-                tvTitle.setText("Chỉnh sửa thông tin cá nhân");
+                getSupportActionBar().setTitle("Chỉnh sửa thông tin cá nhân");
                 etName.setText(user.getName());
                 etPhoneNum.setText(user.getPhone());
                 etAddress.setText(user.getAddress());
@@ -137,7 +125,6 @@ public class InfoInputActivity extends AppCompatActivity {
         }
     }
 
-    //  lấy hình ảnh trả về
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -155,13 +142,17 @@ public class InfoInputActivity extends AppCompatActivity {
                         .setGuidelines(CropImageView.Guidelines.ON)
                         .start(this);
 
-
             } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 if (resultCode == RESULT_OK) {
                     Uri uri = result.getUri();
-                    image = ImageHelper.scaleBitmapDown(MediaStore.Images.Media
-                            .getBitmap(getApplicationContext().getContentResolver(), uri), 300);
+                    Bitmap image = ImageHelper.scaleBitmapDown(MediaStore.Images.Media
+                            .getBitmap(getApplicationContext().getContentResolver(), uri), 800);
+
+                    FileOutputStream out = null;
+                    out = new FileOutputStream(imageFile);
+                    image.compress(Bitmap.CompressFormat.PNG, 100, out);
+
                     init();
 
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -216,11 +207,14 @@ public class InfoInputActivity extends AppCompatActivity {
 
             final Intent intent = new Intent(this, DrugsInputActivity.class);
             intent.putExtra("action", action);
-            if (action == INPUT_IMAGE)
-                intent.putExtra("image", image);
 
+            if (action == Config.PRESCRIPTION_IMAGE) {
+                Uri uri = Uri.fromFile(imageFile);
+                intent.putExtra("image", uri.toString());
+            }
             startActivity(intent);
             finish();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -259,7 +253,7 @@ public class InfoInputActivity extends AppCompatActivity {
             user.setAddress(address);
             user.setPhone(phoneNum);
 
-            MyApplication.getInstance().getPrefManager().clear();
+//            MyApplication.getInstance().getPrefManager().clear();
             MyApplication.getInstance().getPrefManager().storeUser(user);
             return true;
         } catch (Exception e) {
@@ -270,10 +264,9 @@ public class InfoInputActivity extends AppCompatActivity {
 
     //  lấy file hình
     public File getCameraFile() {
-        File dir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
+        File dir = new File(Config.FOLDER_IMAGE);
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String fileName = "prescription_" + timeStamp + ".jpg";
+        String fileName = "pre_" + timeStamp + ".jpg";
         return new File(dir, fileName);
     }
 

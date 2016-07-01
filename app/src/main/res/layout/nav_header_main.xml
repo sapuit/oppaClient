@@ -3,7 +3,7 @@
     android:id="@+id/navHeader"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
-    android:background="@drawable/side_nav_bar"
+    android:background="@mipmap/header_nav"
     android:gravity="bottom"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -16,7 +16,7 @@
         android:id="@+id/imIconHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:layout_marginTop="@dimen/nav_header_vertical_spacing"
         android:src="@android:drawable/sym_def_app_icon" />
 
     <TextView
@@ -26,6 +26,7 @@
         android:paddingTop="12dp"
         android:text="Nguyễn Kiến Phước"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textStyle="bold"
         android:textSize="14sp" />
 
     <TextView
@@ -40,7 +41,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Tân phú quận 9, thành phố Hồ Chí Minh "
-        android:textSize="14sp" />
-
+        android:textSize="12sp" />
 
 </LinearLayout>

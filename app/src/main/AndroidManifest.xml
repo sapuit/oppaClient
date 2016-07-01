@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="vn.soaap.onlinepharmacy">
+    package="vn.soaap.onlinepharmacy">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -44,7 +44,7 @@
         </activity>
         <activity
             android:name=".activity.InfoInputActivity"
-            android:label="@string/title_activity_hand_input"
+            android:label="@string/title_activity_info"
             android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden">
@@ -82,7 +82,6 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
-
         <service
             android:name=".gcm.GcmIntentService"
             android:exported="false">

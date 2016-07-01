@@ -4,7 +4,7 @@
     android:shape="rectangle">
 
     <solid
-        android:color="@color/white"/>
+        android:color="@color/bg_bubble_self"/>
 
     <corners
         android:radius="@dimen/card_corner_radius"/>

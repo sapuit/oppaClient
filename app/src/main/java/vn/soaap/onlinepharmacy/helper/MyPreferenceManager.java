@@ -28,10 +28,23 @@ public class MyPreferenceManager {
     // All Shared Preferences Keys
     //    private static final String KEY_USER_EMAIL = "user_email";
 //    private static final String KEY_USER_ID = "user_id";
+
     private static final String KEY_USER_NAME = "user_name";
     private static final String KEY_USER_ADDR = "user_address";
     private static final String KEY_USER_PHONE = "user_phone";
     private static final String KEY_USER_TOKEN = "user_token";
+
+    /*
+    *   {
+    *       flag : flag,
+    *       type : user/ server,
+    *       title : title,
+    *       timestamp : time,
+    *       message : messages,
+    *
+    *   } | { }
+    *
+    * */
     private static final String KEY_NOTIFICATIONS = "notifications";
 
     //  Contructor
@@ -41,7 +54,7 @@ public class MyPreferenceManager {
         editor = pref.edit();
     }
 
-    //  save notifications from server
+    //  save notifications from server + user
     public void addNotification(String notification) {
         // get old notifications
         String oldNotifications = getNotifications();

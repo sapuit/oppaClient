@@ -38,4 +38,5 @@ public class Drug {
     public void setQuatity(int quantity) {
         this.quantity = quantity;
     }
+
 }

@@ -1,23 +1,22 @@
 package vn.soaap.onlinepharmacy.app;
 
+import android.os.Environment;
+
 /**
  *
  */
 public class Config {
 
-//    public static final String IP = "ktvonline.vn/oppaServer";
-    public static final String IP = "192.168.19.1/www/oppaServer";
-    public static final String URL_UPLOAD       = "http://" + IP + "/prescription/post-image";
-    public static final String UPLOAD_LIST_URL  = "http://" + IP + "/prescription/post-drugs";
-    public static final String URL_CONFORM      = "http://" + IP + "/prescription/conform";
+    public static final String host = "ktvonline.vn/oppaServer";
+//    public static final String host = "10.11.61.2";
+    public static final String URL_UPLOAD       = "http://" + host + "/prescription/post-image";
+    public static final String UPLOAD_LIST_URL  = "http://" + host + "/prescription/post-drugs";
+    public static final String URL_CONFORM      = "http://" + host + "/prescription/conform";
 
     /* flag để xác định show 1 text
      * hay nhiều dòng text trong push notification
      * */
     public static boolean appendNotificationMessages = true;
-
-    // global topic to receive app wide push notifications
-    public static final String TOPIC_GLOBAL = "global";
 
     // broadcast receiver intent filters
     public static final String SENT_TOKEN_TO_SERVER     = "sentTokenToServer";
@@ -36,5 +35,21 @@ public class Config {
     public static final int NOTIFICATION_ID = 100;
     public static final int NOTIFICATION_ID_BIG_IMAGE = 101;
 
+    //  Message
+    public static final String MESSAGE_TYPE     = "type";
+    public static final String MESSAGE_MESSAGE  = "message";
+    public static final String MESSAGE_FLAG     = "flag";
+    public static final String MESSAGE_TITLE    = "title";
+    public static final String MESSAGE_TIMESTAMP = "timestamp";
+    public static final String MESSAGE_SERVER = "server";
+    public static final String MESSAGE_USER = "user";
+
+    //  type prescription
+    public static final int PRESCRIPTION_LIST = 0;
+    public static final int PRESCRIPTION_IMAGE = 1;
+
+    public static final String APP_FOLDER =
+            Environment.getExternalStorageDirectory().getPath() + "/oppa/";
+    public static final String FOLDER_IMAGE= APP_FOLDER + "images/";
 
 }

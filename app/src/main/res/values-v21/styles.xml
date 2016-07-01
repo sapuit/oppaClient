@@ -18,4 +18,5 @@
         <item name="cardPreventCornerOverlap">false</item>
         <item name="cardUseCompatPadding">true</item>
     </style>
+
 </resources>
